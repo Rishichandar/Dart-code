@@ -1,0 +1,22 @@
+#login-container{
+    margin-left: 780px;
+    margin-top: 175px;
+}
+#newuser-box{
+    position: absolute;
+    left: 200px;
+    top: 250px;
+}
+#reg-text{
+    position: relative;
+    left: -75px;
+    
+}
+#forget-pass{
+    cursor: pointer;
+   position: relative;
+   top: 25px;
+   left: 62px;
+   color: rgb(68, 68, 209);
+
+}

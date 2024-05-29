@@ -1,0 +1,19 @@
+#forgetpass-container{
+    margin-left: 560px;
+    margin-top: 145px;
+}
+#new-password{
+    position: relative;
+    right: 8px;
+    top: -20px;
+}
+#confirm-password{
+    position: relative;
+    right: 8px;
+   
+}
+#forget-btn{
+    margin-top: 20px;
+    margin-left: 100px;
+    width: 100px;
+}

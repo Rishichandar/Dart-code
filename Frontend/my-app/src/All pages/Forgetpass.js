@@ -11,6 +11,7 @@ import { toast } from "react-toastify";
 import FormControl from '@mui/material/FormControl';
 import { useNavigate } from 'react-router-dom';
 import Button from '@mui/material/Button';
+import Loginpage from './Login page';
 
 export default function ForgetPassword() {
   const [showPassword1, setShowPassword1] = useState(false);
@@ -92,12 +93,15 @@ export default function ForgetPassword() {
       setError('');
     }
   };
+const ToLoginPage=()=>{
+  navigate('/');
 
+}
   return (
     <>
-      <h1>Forget password</h1>
-      <form onSubmit={handleSubmit}>
-        <div id='forgetpass-container'>
+       <div id='forgetpass-container'>
+        <form onSubmit={handleSubmit}>
+        
           <TextField
             id="email"
             label="Email"
@@ -161,9 +165,11 @@ export default function ForgetPassword() {
           <br />
           {error && <p style={{ color: 'red', marginLeft: '65px' }}>{error}</p>}
           <br />
-          <Button variant="contained" type="submit" id='forget-btn'>Submit</Button>
-        </div>
+          <Button variant="contained" type="submit" id='forget-btn'>reset</Button>
+          <br></br>
+          <span  id='return-link'onClick={ToLoginPage}>Return to Sign In</span>
       </form>
+      </div>
     </>
   );
 }

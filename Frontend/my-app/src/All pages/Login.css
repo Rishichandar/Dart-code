@@ -1,22 +1,71 @@
-#login-container{
-    margin-left: 780px;
-    margin-top: 175px;
-}
-#newuser-box{
+
+
+ .login-page {
+    display: flex;
+    height: 100vh;
+  }
+  
+  .left-section {
+    flex: 1;
+    background-color: #ffffff; /* Light gray color */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  
+  }
+  
+  .right-section {
+    flex: 1;
+    background-color:#FFE8C5; /* Darker gray color */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    transform: translateX(100%);
+    animation: slideIn 1s forwards;
+    
+  }
+  
+
+  #forget-pass {
+    color: blue;
+    cursor: pointer;
+    margin-top: 55px;
+    display: block;
+    text-align: center;
+  }
+  #newuser-box{
     position: absolute;
-    left: 200px;
+    left: 250px;
     top: 250px;
 }
-#reg-text{
-    position: relative;
-    left: -75px;
+#login-container{
+
+    border: 1px solid rgba(255, 255, 255, 0.2); 
+    background: rgba(255, 255, 255, 0.15); 
+    backdrop-filter: blur(5px); 
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    width: 430px;
+    height: 440px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    
     
 }
-#forget-pass{
-    cursor: pointer;
-   position: relative;
-   top: 25px;
-   left: 62px;
-   color: rgb(68, 68, 209);
-
+  /* Keyframes for sliding in the right section */
+@keyframes slideIn {
+  to {
+    transform: translateX(0);
+  }
+}
+#policy{
+  position: relative;
+  top: 40px;
+  left: 55px;
+  color: rgb(167, 165, 165);
 }

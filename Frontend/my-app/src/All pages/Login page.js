@@ -1,4 +1,4 @@
-  
+
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import TextField from '@mui/material/TextField';
@@ -8,7 +8,8 @@ import axios from 'axios';
 import { toast } from "react-toastify";
 import LockOpenOutlinedIcon from '@mui/icons-material/LockOpenOutlined';
 
-export default function Signuppage() {
+
+export default function Loginpage() {
   const { register, handleSubmit, formState: { errors } } = useForm();
   const navigate = useNavigate();
 
@@ -27,28 +28,36 @@ export default function Signuppage() {
       console.error('Signup failed:', error);
     }
   };
-  const nextPage=()=>{
+
+  const nextPage = () => {
     navigate('/signup');
+  };
 
-  }
-  const forgetPassPage=()=>{
+  const forgetPassPage = () => {
     navigate('/forgetpass');
-
-  }
+  };
 
   return (
-    <>
-      <h1>Login page</h1>
+    <div className="login-page">
+     
+      <div className="right-section">
+        <span id='reg-text'>If you are a new user please <span style={{ color: 'green' }}>REGISTER</span></span>
+        <br />
+        <Button variant="outlined" style={{ marginTop: '25px' }} onClick={nextPage}>Signup</Button>
+      </div>
+      <div className="left-section">
       <div id="login-container">
         <form onSubmit={handleSubmit(onSubmit)}>
-        <LockOpenOutlinedIcon style={{position:'absolute',top:'155px',right:'430px'}}/>
+          <LockOpenOutlinedIcon style={{ position: 'absolute', top: '50px', left: '200px' }} />
           <TextField
             id="standard-basic"
             label="Email"
             variant="standard"
-            sx={{
-              width:"300px"
-            }}
+            sx={{ width: "300px",
+            position:'relative',
+            top:'25px',
+
+             }}
             {...register('email', { required: 'Email is required' })}
             error={!!errors.email}
             helperText={errors.email ? errors.email.message : ''}
@@ -59,9 +68,12 @@ export default function Signuppage() {
             label="Password"
             variant="outlined"
             type="password"
-            sx={{
-              width:"300px"
-            }}
+            sx={{ width: "300px", marginTop: "15px",
+            position:'relative',
+            top:'25px',
+
+
+             }}
             {...register('password', { required: 'Password is required' })}
             error={!!errors.password}
             helperText={errors.password ? errors.password.message : ''}
@@ -69,29 +81,28 @@ export default function Signuppage() {
           <br /><br />
           <Button
             variant="contained"
-            color="success"
+          
             type="submit"
             sx={{
-              backgroundColor: 'green',
+              backgroundColor: '#4D869C',
               padding: '10px 20px',
               fontSize: '12px',
               marginLeft: "100px",
               marginTop: "20px",
-              width:'100px'
+              width: '100px',
+              position:'relative',
+              top:'20px'
             }}
           >
             Login
           </Button>
-          <br></br>
+          <br />
           <span id='forget-pass' onClick={forgetPassPage}>Forgotten your password?</span>
-        </form>
-        <div id='newuser-box'>
-          <span id='reg-text'>If you are a new user please <span style={{color:'red'}}>REGISTER</span></span>
           <br></br>
-        <Button variant="outlined" style={{marginTop:'25px'}} onClick={nextPage}>Signup</Button>
-       
-        </div>
+          {/* <span id='policy'>Terms of use. Privacy policy</span> */}
+        </form>
       </div>
-    </>
+      </div>
+    </div>
   );
 }

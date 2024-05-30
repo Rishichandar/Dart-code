@@ -8,6 +8,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Signuppage from './All pages/Signup';
 import { ToastContainer } from "react-toastify";
 import { BrowserRouter as Router, Routes, Route} from "react-router-dom";
+import "./All pages/Signup.css"
 function App() {
   return (
      <div>

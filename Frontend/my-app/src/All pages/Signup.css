@@ -23,7 +23,7 @@
   
   .right-section1 {
     flex: 1;
-    background-color:#FFE8C5; /* Darker gray color */
+    background-color:#6B8A7A; /* Darker gray color */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -49,7 +49,25 @@
     display: flex;
     justify-content: space-around;
     position: relative;
-    top:55px;
+    top:30px;
     cursor: pointer;
     
+  }
+  #Dart{
+    position: relative;
+    top: -70px;
+    /* font-family: Arial, sans-serif; Choose the best font style */
+  color: #ffffff; /* Choose the perfect color */
+    /* font-weight: bold; Make the letters bold */
+    font-size: 2.4rem;
+    letter-spacing: 3px;
+  }
+  #Darttag{
+    position: relative;
+    top: -30px;
+    /* Choose the best font style */
+  color: #ffffff; /* Choose the perfect color */
+    /* font-weight: bold; Make the letters bold */
+    font-size: 1.3rem;
+    letter-spacing: 3px;
   }

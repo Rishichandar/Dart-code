@@ -18,10 +18,12 @@ class User(db.Model):
     userid = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(120), nullable=False)
+    username = db.Column(db.String(120), nullable=False)
 
-    def __init__(self, email, password):
+    def __init__(self, email, password,username):
         self.email = email
         self.password = password
+        self.username = username
 
 # Create the database tables
 with app.app_context():
@@ -34,9 +36,10 @@ def signup():
     data = request.get_json()
     email = data.get('email')
     password = data.get('password')
+    username=data.get('username')
 
-    if not email or not password:
-        return jsonify({'error': 'Email and password are required'}), 400
+    if not email or not password or not username:
+        return jsonify({'error': 'Email,password,username are required'}), 400
 
     # Check if the user already exists
     existing_user = User.query.filter_by(email=email).first()
@@ -46,7 +49,7 @@ def signup():
     # Hash the password
     hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
 
-    new_user = User(email=email, password=hashed_password)
+    new_user = User(email=email, password=hashed_password ,username=username)
     db.session.add(new_user)
     db.session.commit()
 

@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React,{ useState } from 'react';
 import { useForm } from 'react-hook-form';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
@@ -12,8 +12,15 @@ import FacebookRoundedIcon from '@mui/icons-material/FacebookRounded';
 import XIcon from '@mui/icons-material/X';
 import GoogleIcon from '@mui/icons-material/Google';
 import GitHubIcon from '@mui/icons-material/GitHub';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import IconButton from '@mui/material/IconButton';
+import InputAdornment from '@mui/material/InputAdornment';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import InputLabel from '@mui/material/InputLabel';
+import FormControl from '@mui/material/FormControl';
 export default function Signuppage() {
-  
+  const [showPassword1, setShowPassword1] = useState(false);
   const { register, handleSubmit, formState: { errors } } = useForm();
   const navigate = useNavigate();
 
@@ -21,7 +28,8 @@ export default function Signuppage() {
     try {
       const response = await axios.post('http://127.0.0.1:5000/user/signup', {
         email: data.email,
-        password: data.password
+        password: data.password,
+        username:data.username
       });
       const token = response.data.token;
       localStorage.setItem('token', token);
@@ -36,6 +44,8 @@ export default function Signuppage() {
   const LoginPage = () => {
     navigate('/');
   };
+  const handleClickShowPassword1 = () => setShowPassword1((show) => !show);
+  const handleMouseDownPassword1 = (event) => event.preventDefault();
 
   return (
     <>
@@ -52,7 +62,7 @@ export default function Signuppage() {
             sx={{
               width:"300px",
               position:"relative",
-              top:'-25px'
+              top:'-20px'
             }}
             {...register('email', { required: 'Email is required' })}
             error={!!errors.email}
@@ -61,18 +71,58 @@ export default function Signuppage() {
           <br /><br />
           <TextField
             id="outlined-basic"
+            label="Username"
+            variant="outlined"
+            type="Username"
+            sx={{ width: "300px", marginTop: "0px",
+            position:'relative',
+            top:'-15px',
+
+
+             }}
+            {...register('username', { required: 'username is required' })}
+            error={!!errors.username}
+            helperText={errors.username ? errors.username.message : ''}
+          />
+          <br></br>
+          {/* <TextField
+            id="outlined-basic"
             label="Password"
             variant="outlined"
             type="password"
             sx={{
               width:"300px",
               position:"relative",
-              top:'-10px'
+              top:'10px'
             }}
             {...register('password', { required: 'Password is required' })}
             error={!!errors.password}
             helperText={errors.password ? errors.password.message : ''}
-          />
+          /> */}
+          <FormControl  sx={{ m: 0, width: '35ch',position:'relative',top:'10px', }} variant="outlined">
+            <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
+            <OutlinedInput
+              id="outlined-adornment-password"
+              type={showPassword1 ? 'text' : 'password'}
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={handleClickShowPassword1}
+                    onMouseDown={handleMouseDownPassword1}
+                    edge="end"
+                  >
+                    {showPassword1 ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              }
+              label="Password"
+              {...register('password', { required: 'Password is required' })}
+            error={!!errors.password}
+            helperText={errors.password ? errors.password.message : ''}
+            />
+           
+          </FormControl>
           <br /><br />
           <FormControlLabel style={{position:'relative',top:'5px',left:'5px'}} control={<Checkbox/>} label="I have read and agree to the terms" />
           <br></br>
@@ -94,12 +144,12 @@ export default function Signuppage() {
           >
             Signup
           </Button>
-          <ul id='logos'>
-           <li><FacebookRoundedIcon fontSize='10px'/></li>
-           <li><XIcon fontSize='10px'/></li>
-           <li><GoogleIcon fontSize='10px'/></li>
-           <li><GitHubIcon fontSize='10px'/></li>
-          </ul>
+          {/* <ul id='logos'>
+           <li><FacebookRoundedIcon fontSize='8px'/></li>
+           <li><XIcon fontSize='8px'/></li>
+           <li><GoogleIcon fontSize='8px'/></li>
+           <li><GitHubIcon fontSize='8px'/></li>
+          </ul> */}
           
         </form>
        
@@ -107,7 +157,8 @@ export default function Signuppage() {
      
       </div>
       <div className="right-section1">
-      <Button variant="outlined" style={{ marginTop: '25px' }} onClick={LoginPage}>Login</Button>
+      <span id='Darttag'>Transforming chaos into clarity for AI models</span>
+      <Button variant="outlined" style={{ marginTop: '25px',borderColor:'white',color:'white' }} onClick={LoginPage}>Login</Button>
 
       </div>
       </div>

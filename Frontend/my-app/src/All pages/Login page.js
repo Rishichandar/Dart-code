@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React,{ useState } from 'react';
 import { useForm } from 'react-hook-form';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
@@ -7,9 +7,16 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from "react-toastify";
 import LockOpenOutlinedIcon from '@mui/icons-material/LockOpenOutlined';
-
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import IconButton from '@mui/material/IconButton';
+import InputAdornment from '@mui/material/InputAdornment';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import InputLabel from '@mui/material/InputLabel';
+import FormControl from '@mui/material/FormControl';
 
 export default function Loginpage() {
+  const [showPassword1, setShowPassword1] = useState(false);
   const { register, handleSubmit, formState: { errors } } = useForm();
   const navigate = useNavigate();
 
@@ -24,7 +31,7 @@ export default function Loginpage() {
       toast.success("Login successfully");
       navigate('/main');
     } catch (error) {
-      toast.error("Incorrect details");
+      toast.error("Incorrect password");
       console.error('Signup failed:', error);
     }
   };
@@ -36,14 +43,17 @@ export default function Loginpage() {
   const forgetPassPage = () => {
     navigate('/forgetpass');
   };
+  const handleClickShowPassword1 = () => setShowPassword1((show) => !show);
+  const handleMouseDownPassword1 = (event) => event.preventDefault();
 
   return (
     <div className="login-page">
      
       <div className="right-section">
-        <span id='reg-text'>If you are a new user please <span style={{ color: 'green' }}>REGISTER</span></span>
+        <span id='welcome-msg'>Welcome to Dart</span>
+        <span id='reg-text'>If you are a new user please <span style={{ color: 'white' }}>REGISTER</span></span>
         <br />
-        <Button variant="outlined" style={{ marginTop: '25px' }} onClick={nextPage}>Signup</Button>
+        <Button variant="outlined" style={{ marginTop: '25px',borderColor:'white',color:'white' }} onClick={nextPage}>Signup</Button>
       </div>
       <div className="left-section">
       <div id="login-container">
@@ -63,7 +73,7 @@ export default function Loginpage() {
             helperText={errors.email ? errors.email.message : ''}
           />
           <br /><br />
-          <TextField
+          {/* <TextField
             id="outlined-basic"
             label="Password"
             variant="outlined"
@@ -77,7 +87,31 @@ export default function Loginpage() {
             {...register('password', { required: 'Password is required' })}
             error={!!errors.password}
             helperText={errors.password ? errors.password.message : ''}
-          />
+          /> */}
+          <FormControl  sx={{ m: 0, width: '35ch',position:'relative',top:'35px', }} variant="outlined">
+            <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
+            <OutlinedInput
+              id="outlined-adornment-password"
+              type={showPassword1 ? 'text' : 'password'}
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={handleClickShowPassword1}
+                    onMouseDown={handleMouseDownPassword1}
+                    edge="end"
+                  >
+                    {showPassword1 ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              }
+              label="Password"
+              {...register('password', { required: 'Password is required' })}
+            error={!!errors.password}
+            helperText={errors.password ? errors.password.message : ''}
+            />
+           
+          </FormControl>
           <br /><br />
           <Button
             variant="contained"

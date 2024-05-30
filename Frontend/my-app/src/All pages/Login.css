@@ -18,7 +18,7 @@
   
   .right-section {
     flex: 1;
-    background-color:#FFE8C5; /* Darker gray color */
+    background-color:#6B8A7A; /* Darker gray color #8CB9BD */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -26,6 +26,7 @@
     padding: 20px;
     transform: translateX(100%);
     animation: slideIn 1s forwards;
+    z-index: 1;
     
   }
   
@@ -68,4 +69,20 @@
   top: 40px;
   left: 55px;
   color: rgb(167, 165, 165);
+}
+#welcome-msg{
+  position: relative;
+  top: -30px;
+  /* font-family: Arial, sans-serif; Choose the best font style */
+color: #ffffff; /* Choose the perfect color */
+  /* font-weight: bold; Make the letters bold */
+  font-size: 2.4rem;
+  letter-spacing: 3px;
+  
+}
+#reg-text{
+  color: #ffffff;
+  font-size: 14px;
+  letter-spacing: 1px;
+  
 }

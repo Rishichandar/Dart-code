@@ -19,6 +19,7 @@ export default function Loginpage() {
   const [showPassword1, setShowPassword1] = useState(false);
   const { register, handleSubmit, formState: { errors } } = useForm();
   const navigate = useNavigate();
+  
 
   const onSubmit = async (data) => {
     try {
@@ -29,7 +30,7 @@ export default function Loginpage() {
       const token = response.data.token;
       localStorage.setItem('token', token);
       toast.success("Login successfully");
-      navigate('/main');
+      navigate('/main', { state: { email: data.email } });
     } catch (error) {
       toast.error("Incorrect password");
       console.error('Signup failed:', error);
@@ -73,21 +74,7 @@ export default function Loginpage() {
             helperText={errors.email ? errors.email.message : ''}
           />
           <br /><br />
-          {/* <TextField
-            id="outlined-basic"
-            label="Password"
-            variant="outlined"
-            type="password"
-            sx={{ width: "300px", marginTop: "15px",
-            position:'relative',
-            top:'25px',
-
-
-             }}
-            {...register('password', { required: 'Password is required' })}
-            error={!!errors.password}
-            helperText={errors.password ? errors.password.message : ''}
-          /> */}
+        
           <FormControl  sx={{ m: 0, width: '35ch',position:'relative',top:'35px', }} variant="outlined">
             <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
             <OutlinedInput

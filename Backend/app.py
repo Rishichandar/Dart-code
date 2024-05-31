@@ -104,6 +104,21 @@ def reset_password():
 
     return jsonify({'message': 'Password reset successful'}), 200
 
+@app.route('/user/username', methods=['POST'])
+def get_username():
+    data = request.get_json()
+    email = data.get('email')
+
+    if not email:
+        return jsonify({'error': 'Email is required'}), 400
+
+    # Find the user by email
+    user = User.query.filter_by(email=email).first()
+    if not user:
+        return jsonify({'error': 'User not found'}), 404
+
+    return jsonify({'username': user.username}), 200
+
 
 if __name__ == '__main__':
     app.run(debug=True)

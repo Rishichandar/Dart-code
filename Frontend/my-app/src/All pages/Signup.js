@@ -85,20 +85,7 @@ export default function Signuppage() {
             helperText={errors.username ? errors.username.message : ''}
           />
           <br></br>
-          {/* <TextField
-            id="outlined-basic"
-            label="Password"
-            variant="outlined"
-            type="password"
-            sx={{
-              width:"300px",
-              position:"relative",
-              top:'10px'
-            }}
-            {...register('password', { required: 'Password is required' })}
-            error={!!errors.password}
-            helperText={errors.password ? errors.password.message : ''}
-          /> */}
+         
           <FormControl  sx={{ m: 0, width: '35ch',position:'relative',top:'10px', }} variant="outlined">
             <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
             <OutlinedInput

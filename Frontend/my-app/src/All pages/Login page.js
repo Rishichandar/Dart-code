@@ -19,7 +19,7 @@ export default function Loginpage() {
   const [email, setEmail] = useState(localStorage.getItem('email') || '');
   const [showPassword1, setShowPassword1] = useState(false);
   const { register, handleSubmit, formState: { errors } } = useForm();
-  const navigate = useNavigate();
+  const navigate = useNavigate()
   
   useEffect(() => {
     if (email) {

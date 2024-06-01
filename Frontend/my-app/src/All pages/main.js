@@ -2,11 +2,20 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import Button from '@mui/material/Button';
-
+import { useNavigate } from 'react-router-dom';
+import NavigationIcon from '@mui/icons-material/Navigation';
+import Fab from '@mui/material/Fab';
 export default function Main() {
+  const navigate = useNavigate();
   const location = useLocation();
-  const email = location.state?.email;
+  // const email = location.state?.email;
+  const [email, setEmail] = useState(location.state?.email || localStorage.getItem('email'));
+  console.log(email)
   const [username, setUsername] = useState('');
+  //upload page
+  const toUploadpage=()=>{
+    navigate('/upload');
+  };
 
   useEffect(() => {
     if (email) {
@@ -36,7 +45,12 @@ export default function Main() {
   return (
     <div>
       <span id='' style={{marginLeft:"250px"}}>{`Welcome, ${username}`}</span>
-      <Button  size="small" variant="contained" id='upload-page'>upload</Button>
+     
+      <Fab variant="extended" id='upload-page' onClick={toUploadpage}>
+        <NavigationIcon sx={{ mr: 1 }} />
+        
+        Upload
+      </Fab>
     </div>
   );
 }

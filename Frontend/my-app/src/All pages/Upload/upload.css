@@ -1,0 +1,69 @@
+#Dart-font {
+    color: rgb(83, 121, 192); /* Choose the perfect color */
+    font-size: 2.2rem;
+    letter-spacing: 3px;
+    position: absolute;
+    left: 210px;
+    top: 90px;
+  }
+  
+  /* Media query for small laptops */
+  @media (max-width: 1200px) {
+    #Dart-font {
+      font-size: 2.0rem;
+      letter-spacing: 2.5px;
+      left: 180px;
+      top: 80px;
+    }
+  }
+  
+  /* Media query for tablets */
+  @media (max-width: 992px) {
+    #Dart-font {
+      font-size: 2rem;
+      letter-spacing: 2px;
+      left: 150px;
+      top: 70px;
+    }
+  }
+  
+  /* Media query for large mobile phones */
+  @media (max-width: 768px) {
+    #Dart-font {
+      font-size: 1.8rem;
+      letter-spacing: 1.5px;
+      left: 120px;
+      top: 60px;
+    }
+  }
+  
+  /* Media query for small mobile phones */
+  @media (max-width: 576px) {
+    #Dart-font {
+      font-size: 1.6rem;
+      letter-spacing: 1px;
+      left: 90px;
+      top: 50px;
+    }
+  }
+  #upload-btn{
+    width: 350px;
+    height:150px;
+    position: relative;
+    top: 90px;
+    left: 600px;
+    background-color: rgb(87, 92, 97)  ;
+    color: rgb(255, 255, 255);
+    border-radius: 25px;
+    backdrop-filter: blur(2px); 
+    box-shadow: 0 8px 32px 0 rgba(103, 107, 170, 0.37);
+  
+  }
+  #file-name {
+    position: relative;
+    top: 90px;
+    left: 650px;
+    font-size: 1.3rem;
+    color: #333;
+  }
+  

@@ -13,6 +13,8 @@ import Navbar from './All pages/Navbar/navbar';
 import "./All pages/Navbar/navbar.css"
 import { ToastContainer } from "react-toastify";
 import { BrowserRouter as Router, Routes, Route} from "react-router-dom";
+import Upload from './All pages/Upload/upload';
+import "./All pages/Upload/upload.css"
 import "./All pages/Signup.css"
 function App() {
   return (
@@ -37,6 +39,16 @@ function App() {
         <Navbar/>
         <Sidebar/>
         <Main />
+        </>
+        
+      } 
+        
+        />
+        <Route path='/upload' element={
+        <>
+        <Navbar/>
+        <Sidebar/>
+        <Upload />
         </>
         
       } 

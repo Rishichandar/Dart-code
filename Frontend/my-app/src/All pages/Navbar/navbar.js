@@ -21,7 +21,8 @@ export default function Navbar(){
     const handleClose = () => setOpen(false);
     const [open, setOpen] = useState(false);
     const location = useLocation();
-    const email = location.state?.email;
+    // const email = location.state?.email;
+    const [email, setEmail] = useState(location.state?.email || localStorage.getItem('email'));
     //username
     const [username, setUsername] = useState('');
     //for logout

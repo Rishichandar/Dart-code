@@ -1,11 +1,46 @@
-.navbar{
+.navbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
     height: 69px;
     color: rgb(0, 0, 0);
     background: linear-gradient(90deg, rgb(227, 230, 228) 10%, rgb(227,230, 228) 100%);
-    
-   
-    
+}
+
+/* Media query for small devices (phones in portrait mode, less than 600px) */
+@media (max-width: 599px) {
+    .navbar {
+        flex-direction: column;
+        height: auto;
+        padding: 10px;
+        text-align: center;
+    }
+}
+
+/* Media query for medium devices (tablets in portrait mode, 600px and up) */
+@media (min-width: 600px) and (max-width: 767px) {
+    .navbar {
+        flex-direction: column;
+        height: auto;
+        padding: 15px;
+        text-align: center;
+    }
+}
+
+/* Media query for medium devices (tablets in landscape mode, 768px and up) */
+@media (min-width: 768px) and (max-width: 991px) {
+    .navbar {
+        flex-direction: row;
+        height: 69px;
+        padding: 20px;
+    }
+}
+
+/* Media query for large devices (desktops, 992px and up) */
+@media (min-width: 992px) {
+    .navbar {
+        flex-direction: row;
+        height: 69px;
+        padding: 20px;
+    }
 }

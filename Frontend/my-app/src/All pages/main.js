@@ -44,7 +44,7 @@ export default function Main() {
 
   return (
     <div>
-      <span id='' style={{marginLeft:"250px"}}>{`Welcome, ${username}`}</span>
+      <span id='welcome-user' style={{marginLeft:"250px"}}>{`Welcome ${username}`}</span>
      
       <Fab variant="extended" id='upload-page' onClick={toUploadpage}>
         <NavigationIcon sx={{ mr: 1 }} />

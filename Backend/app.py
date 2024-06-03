@@ -2,7 +2,11 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
-import mysql.connector
+import pandas as pd
+import docx
+import json
+import os
+import io
 app = Flask(__name__)
 CORS(app)
 
@@ -12,7 +16,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
-# Define the User model
+# Define the User model 
 class User(db.Model):
     __tablename__='dart_users'
     userid = db.Column(db.Integer, primary_key=True)
@@ -57,6 +61,7 @@ def signup():
     token = 'some_generated_token'  # Replace with real token generation logic
 
     return jsonify({'token': token}), 200
+
 @app.route('/user/login', methods=['POST'])
 def login():
     data = request.get_json()
@@ -118,6 +123,82 @@ def get_username():
         return jsonify({'error': 'User not found'}), 404
 
     return jsonify({'username': user.username}), 200
+
+class preprocess:
+    @staticmethod
+    def poz_read_file(file_path_or_uploaded_file):
+        try:
+            # Check if the input is a file path or an uploaded file object
+            if isinstance(file_path_or_uploaded_file, str):
+                # It's a file path
+                file_extension = os.path.splitext(file_path_or_uploaded_file)[-1].lower()
+                with open(file_path_or_uploaded_file, 'rb') as f:
+                    file_content = f.read()
+            else:
+                # It's an uploaded file object
+                file_extension = file_path_or_uploaded_file.filename.split('.')[-1].lower()
+                file_content = file_path_or_uploaded_file.read()
+
+            # Debug: Print file extension and size
+            print(f"File extension: {file_extension}")
+            print(f"File content size: {len(file_content)} bytes")
+
+            # Read the file content based on its extension
+            if file_extension == 'csv':
+                return pd.read_csv(io.BytesIO(file_content))
+            elif file_extension in ['xls', 'xlsx']:
+                return pd.read_excel(io.BytesIO(file_content))
+            elif file_extension == 'txt':
+                data = file_content.decode("utf-8")
+                return pd.DataFrame({'text_data': [data]})
+            elif file_extension in ['doc', 'docx']:
+                doc = docx.Document(io.BytesIO(file_content))
+                text = ' '.join([para.text for para in doc.paragraphs])
+                return pd.DataFrame({'text_data': [text]})
+            elif file_extension == 'json':
+                json_data = json.loads(file_content)
+                text = ' '.join(str(value) for value in json_data.values())
+                return pd.DataFrame({'text_data': [text]})
+            else:
+                print("Unsupported file type.")
+                return None
+        except Exception as e:
+            # Debug: Print exception message
+            print(f"Exception in poz_read_file: {e}")
+            return None
+       
+
+
+
+@app.route('/upload-csv', methods=['POST'])
+def upload_csv():
+    if 'file' not in request.files:
+        return jsonify({'error': 'No file selected'}), 400
+    file = request.files['file']
+    if file.filename == '':
+        return jsonify({'error': 'No selected file'}), 400
+    if file:
+        try:
+            # Debug: Print received file information
+            print(f"Received file: {file.filename}")
+
+            # Read CSV file using your preprocess class
+            df = preprocess.poz_read_file(file)
+
+            # Debug: Check the output of the preprocessing function
+            if df is None:
+                print("preprocess.poz_read_file returned None")
+                return jsonify({'error': 'Failed to process file'}), 500
+            
+            # Debug: Print a summary of the dataframe
+            print("Processed DataFrame:", df.head())
+
+            # Return JSON response
+            return df.to_json(), 200
+        except Exception as e:
+            # Debug: Print the exception message
+            print("Exception:", str(e))
+            return jsonify({'error': str(e)}), 500
 
 
 if __name__ == '__main__':

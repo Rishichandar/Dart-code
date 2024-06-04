@@ -170,6 +170,35 @@ class preprocess:
 
 
 
+# @app.route('/upload-csv', methods=['POST'])
+# def upload_csv():
+#     if 'file' not in request.files:
+#         return jsonify({'error': 'No file selected'}), 400
+#     file = request.files['file']
+#     if file.filename == '':
+#         return jsonify({'error': 'No selected file'}), 400
+#     if file:
+#         try:
+#             # Debug: Print received file information
+#             print(f"Received file: {file.filename}")
+
+#             # Read CSV file using your preprocess class
+#             df = preprocess.poz_read_file(file)
+
+#             # Debug: Check the output of the preprocessing function
+#             if df is None:
+#                 print("preprocess.poz_read_file returned None")
+#                 return jsonify({'error': 'Failed to process file'}), 500
+            
+#             # Debug: Print a summary of the dataframe
+#             print("Processed DataFrame:", df.head())
+
+#             # Return JSON response
+#             return df
+#         except Exception as e:
+#             # Debug: Print the exception message
+#             print("Exception:", str(e))
+#             return jsonify({'error': str(e)}), 500
 @app.route('/upload-csv', methods=['POST'])
 def upload_csv():
     if 'file' not in request.files:
@@ -179,25 +208,15 @@ def upload_csv():
         return jsonify({'error': 'No selected file'}), 400
     if file:
         try:
-            # Debug: Print received file information
-            print(f"Received file: {file.filename}")
+            # Read CSV file using pandas
+            df = pd.read_csv(file)
 
-            # Read CSV file using your preprocess class
-            df = preprocess.poz_read_file(file)
-
-            # Debug: Check the output of the preprocessing function
-            if df is None:
-                print("preprocess.poz_read_file returned None")
-                return jsonify({'error': 'Failed to process file'}), 500
-            
-            # Debug: Print a summary of the dataframe
-            print("Processed DataFrame:", df.head())
+            # Convert DataFrame to JSON
+            json_data = df.to_json(orient='split')
 
             # Return JSON response
-            return df.to_json(), 200
+            return jsonify({'data': json_data})
         except Exception as e:
-            # Debug: Print the exception message
-            print("Exception:", str(e))
             return jsonify({'error': str(e)}), 500
 
 

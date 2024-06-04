@@ -47,23 +47,23 @@
     }
   }
   #upload-btn{
-    width: 190px;
-    height:100px;
-    position: relative;
-    top: 30px;
-    left: 250px;
-    background-color: rgb(27, 52, 77)  ;
+    width: 100px;
+    height:40px;
+    position: absolute;
+bottom: 30px;
+right: 40px;
+    background-color: rgb(70, 101, 131)  ;
     color: rgb(255, 255, 255);
-    border-radius: 25px;
+    border-radius: 5px;
     backdrop-filter: blur(2px); 
     box-shadow: 0 8px 32px 0 rgba(103, 107, 170, 0.37);
   
   }
   #file-name {
     position: relative;
-    left:400px;
+    left:300px;
     top: 30px;
-    font-size: 1.3rem;
+    font-size: 1.0rem;
     color: #333;
   }
 
@@ -72,4 +72,41 @@
     top: 30px;
     left: 300px;
   }
+
+  .csv-table {
+    border-collapse: collapse;
+    width: 100%;
+    position: relative;
+    top: 40px;
+   
+ 
+
+
+}
+
+.csv-table th, .csv-table td {
+    border: 1px solid #c4c1c1;
+    text-align: center;
+    padding: 10px;
+    
+}
+
+.csv-table th {
+    background-color: #f2f2f2;
+    font-size: small;
+    font-weight: 500;    
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+margin-left: 70px;
   
+ 
+}
+.table-container {
+  max-height: 450px; 
+  overflow: auto;
+  width: 70%;
+
+}

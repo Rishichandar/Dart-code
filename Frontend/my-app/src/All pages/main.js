@@ -49,7 +49,7 @@ export default function Main() {
       <Fab variant="extended" id='upload-page' onClick={toUploadpage}>
         <NavigationIcon sx={{ mr: 1 }} />
         
-        Upload
+        Upload page
       </Fab>
     </div>
   );

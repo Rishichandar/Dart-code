@@ -1,88 +1,149 @@
-
-
- .login-page {
-    display: flex;
-    height: 100vh;
-  }
-  
-  .left-section {
-    flex: 1;
-    background-color: #ffffff; /* Light gray color */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-  
-  }
-  
-  .right-section {
-    flex: 1;
-    background-color:#8CB9BD; /* Darker gray color #8CB9BD */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    transform: translateX(100%);
-    animation: slideIn 1s forwards;
-    z-index: 1;
-    
-  }
-  
-
-  #forget-pass {
-    color: blue;
-    cursor: pointer;
-    margin-top: 55px;
-    display: block;
-    text-align: center;
-  }
-  #newuser-box{
-    position: absolute;
-    left: 250px;
-    top: 250px;
+/* Default styles (desktops/laptops) */
+.login-page {
+  display: flex;
+  height: 100vh;
 }
-#login-container{
 
-    border: 1px solid rgba(255, 255, 255, 0.2); 
-    background: rgba(255, 255, 255, 0.15); 
-    backdrop-filter: blur(5px); 
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37); 
-    width: 430px;
-    height: 440px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 10px;
-    
-    
+.left-section,
+.right-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
 }
-  /* Keyframes for sliding in the right section */
-@keyframes slideIn {
-  to {
-    transform: translateX(0);
-  }
+
+.left-section {
+  background-color: #ffffff; /* Light gray color */
 }
-#policy{
+
+.right-section {
+  background-color: #8CB9BD; /* Darker gray color #8CB9BD */
+  transform: translateX(100%);
+  animation: slideIn 1s forwards;
+  z-index: 1;
+}
+
+#forget-pass {
+  color: blue;
+  cursor: pointer;
+  margin-top: 55px;
+  display: block;
+  text-align: center;
+}
+
+#newuser-box {
+  position: absolute;
+  left: 250px;
+  top: 250px;
+}
+
+#login-container {
+  border: 1px solid rgba(255, 255, 255, 0.2); 
+  background: rgba(255, 255, 255, 0.15); 
+  backdrop-filter: blur(5px); 
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37); 
+  width: 430px;
+  height: 440px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+}
+
+#policy {
   position: relative;
   top: 40px;
   left: 55px;
   color: rgb(167, 165, 165);
 }
-#welcome-msg{
+
+#welcome-msg {
   position: relative;
   top: -30px;
-  /* font-family: Arial, sans-serif; Choose the best font style */
-color: #ffffff; /* Choose the perfect color */
-  /* font-weight: bold; Make the letters bold */
+  color: #ffffff;
   font-size: 2.4rem;
   letter-spacing: 3px;
-  
 }
-#reg-text{
+
+#reg-text {
   color: #ffffff;
   font-size: 14px;
   letter-spacing: 1px;
+}
+
+/* Tablets (landscape and portrait) */
+@media (max-width: 1024px) {
+  .login-page {
+    flex-direction: column;
+  }
   
+  .right-section {
+    transform: translateX(0);
+    animation: none;
+    z-index: auto;
+  }
+
+  #newuser-box {
+    left: 150px;
+    top: 200px;
+  }
+
+  #login-container {
+    width: 90%;
+    height: auto;
+    padding: 20px;
+  }
+}
+
+/* Mobile devices */
+@media (max-width: 768px) {
+  .login-page {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .left-section,
+  .right-section {
+    flex: none;
+    width: 100%;
+    padding: 10px;
+  }
+
+  #newuser-box {
+    left: 50px;
+    top: 150px;
+  }
+
+  #login-container {
+    width: 90%;
+    height: auto;
+    padding: 20px;
+  }
+
+  #forget-pass {
+    margin-top: 20px;
+  }
+
+  #policy {
+    top: 20px;
+    left: 10px;
+  }
+
+  #welcome-msg {
+    font-size: 1.8rem;
+    top: -20px;
+  }
+
+  #reg-text {
+    font-size: 12px;
+  }
+}
+
+/* Keyframes for sliding in the right section */
+@keyframes slideIn {
+  to {
+    transform: translateX(0);
+  }
 }

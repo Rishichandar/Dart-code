@@ -1,73 +1,127 @@
-#signup-container{
-
-    border: 1px solid rgba(255, 255, 255, 0.2); /* Transparent border */
-    background: rgba(255, 255, 255, 0.15); /* Transparent background */
-    backdrop-filter: blur(5px); /* Background blur */
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37); /* Box shadow */
-    width: 430px;
-    height: 440px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 10px;
+/* Default styles (desktops/laptops) */
+.signup-page {
+  display: flex;
+  height: 100vh;
 }
-.left-section1{
-    flex: 1;
-    background-color: #ffffff; /* Light gray color */
-    display: flex;
+
+.left-section1,
+.right-section1 {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.left-section1 {
+  background-color: #ffffff; /* Light gray color */
+}
+
+.right-section1 {
+  background-color: #8CB9BD; /* Darker gray color */
+  transform: translateX(-100%);
+  animation: slideIn 1s forwards;
+}
+
+#signup-container {
+  border: 1px solid rgba(255, 255, 255, 0.2); 
+  background: rgba(255, 255, 255, 0.15); 
+  backdrop-filter: blur(5px); 
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37); 
+  width: 430px;
+  height: 440px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+}
+
+#logos {
+  list-style-type: none;
+  color: rgb(77, 111, 150);
+  display: flex;
+  justify-content: space-around;
+  position: relative;
+  top: 30px;
+  cursor: pointer;
+}
+
+#Dart {
+  position: relative;
+  top: -70px;
+  color: #ffffff;
+  font-size: 2.4rem;
+  letter-spacing: 3px;
+}
+
+#Darttag {
+  position: relative;
+  top: -30px;
+  color: #ffffff;
+  font-size: 1.3rem;
+  letter-spacing: 3px;
+}
+
+/* Tablets (landscape and portrait) */
+@media (max-width: 1024px) {
+  .signup-page {
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
   }
   
   .right-section1 {
-    flex: 1;
-    background-color:#8CB9BD; /* Darker gray color */
-    display: flex;
+    transform: translateX(0);
+    animation: none;
+  }
+
+  #signup-container {
+    width: 90%;
+    height: auto;
+    padding: 20px;
+  }
+}
+
+/* Mobile devices */
+@media (max-width: 768px) {
+  .signup-page {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .left-section1,
+  .right-section1 {
+    flex: none;
+    width: 100%;
+    padding: 10px;
+  }
+
+  #signup-container {
+    width: 90%;
+    height: auto;
+    padding: 20px;
+  }
+
+  #logos {
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    padding: 20px;
-    transform: translateX(-100%);
-    animation: slideIn 1s forwards;
+    top: 20px;
   }
 
+  #Dart {
+    font-size: 1.8rem;
+    top: -20px;
+  }
 
-  .signup-page {
-    display: flex;
-    height: 100vh;
+  #Darttag {
+    font-size: 1rem;
+    top: -10px;
   }
-  @keyframes slideIn {
-    to {
-      transform: translateX(0);
-    }
+}
+
+/* Keyframes for sliding in the right section */
+@keyframes slideIn {
+  to {
+    transform: translateX(0);
   }
-  #logos{
-    list-style-type: none;
-    color: rgb(77, 111, 150);
-    display: flex;
-    justify-content: space-around;
-    position: relative;
-    top:30px;
-    cursor: pointer;
-    
-  }
-  #Dart{
-    position: relative;
-    top: -70px;
-    /* font-family: Arial, sans-serif; Choose the best font style */
-  color: #ffffff; /* Choose the perfect color */
-    /* font-weight: bold; Make the letters bold */
-    font-size: 2.4rem;
-    letter-spacing: 3px;
-  }
-  #Darttag{
-    position: relative;
-    top: -30px;
-    /* Choose the best font style */
-  color: #ffffff; /* Choose the perfect color */
-    /* font-weight: bold; Make the letters bold */
-    font-size: 1.3rem;
-    letter-spacing: 3px;
-  }
+}
+

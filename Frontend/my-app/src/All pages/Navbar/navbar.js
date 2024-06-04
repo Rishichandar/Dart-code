@@ -25,6 +25,8 @@ export default function Navbar(){
     const [email, setEmail] = useState(location.state?.email || localStorage.getItem('email'));
     //username
     const [username, setUsername] = useState('');
+    //Email
+
     //for logout
     const handleLogout = () => {
       
@@ -45,6 +47,7 @@ export default function Navbar(){
       .then(data => {
         if (data.username) {
           setUsername(data.username);
+        
         } else {
           console.error(data.error);
         }
@@ -103,9 +106,6 @@ return(
                 alignItems={"center"}
                 justifyContent={"space-around"}
               >
-                  {/* <Typography color={data.RoleId === 2 ? "green" : "red"}>
-                  {data.RoleId === 2 ? "User" : "Admin"}
-                </Typography>*/}
                 <Button onClick={handleLogout}>
                  
                   Sign Out
@@ -114,7 +114,9 @@ return(
             </Box>
 
             <Divider />
-         
+            <Typography style={{marginLeft:"70px"}}>
+                  {email}
+                </Typography>
             {/* <List>
               {data.RoleId === 2 ? (
                 <Box>

@@ -167,38 +167,6 @@ class preprocess:
             print(f"Exception in poz_read_file: {e}")
             return None
        
-
-
-
-# @app.route('/upload-csv', methods=['POST'])
-# def upload_csv():
-#     if 'file' not in request.files:
-#         return jsonify({'error': 'No file selected'}), 400
-#     file = request.files['file']
-#     if file.filename == '':
-#         return jsonify({'error': 'No selected file'}), 400
-#     if file:
-#         try:
-#             # Debug: Print received file information
-#             print(f"Received file: {file.filename}")
-
-#             # Read CSV file using your preprocess class
-#             df = preprocess.poz_read_file(file)
-
-#             # Debug: Check the output of the preprocessing function
-#             if df is None:
-#                 print("preprocess.poz_read_file returned None")
-#                 return jsonify({'error': 'Failed to process file'}), 500
-            
-#             # Debug: Print a summary of the dataframe
-#             print("Processed DataFrame:", df.head())
-
-#             # Return JSON response
-#             return df
-#         except Exception as e:
-#             # Debug: Print the exception message
-#             print("Exception:", str(e))
-#             return jsonify({'error': str(e)}), 500
 @app.route('/upload-csv', methods=['POST'])
 def upload_csv():
     if 'file' not in request.files:

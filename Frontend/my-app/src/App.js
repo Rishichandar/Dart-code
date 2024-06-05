@@ -16,6 +16,16 @@ import { BrowserRouter as Router, Routes, Route} from "react-router-dom";
 import Upload from './All pages/Upload/upload';
 import "./All pages/Upload/upload.css"
 import "./All pages/Signup.css"
+import Datapreproccessing from './All pages/datapreproccessing/datapreproccess';
+import "./All pages/datapreproccessing/datapreproccess.css"
+import Textpreproccessing from './All pages/textpreproccessing/textpreproccess';
+import "./All pages/textpreproccessing/textpreproccess.css"
+import Featureengineer from './All pages/featureengineering/featureengineer';
+import "./All pages/featureengineering/featureengineer.css"
+import Imbalanceddataset from './All pages/imbalanceddataset/imbalanceddataset';
+import "./All pages/imbalanceddataset/imbalanceddataset.css"
+import Mlpipeline from './All pages/mlpipeline/mlpipeline';
+import "./All pages/mlpipeline/mlpipeline.css"
 function App() {
   return (
      <div>
@@ -54,6 +64,57 @@ function App() {
       } 
         
         />
+      <Route path='/data-preproccess' element={
+        <>
+        <Navbar/>
+        <Sidebar/>
+        <Datapreproccessing />
+        </>
+        
+      } 
+        
+        />
+        <Route path='/text-preproccess' element={
+        <>
+        <Navbar/>
+        <Sidebar/>
+        <Textpreproccessing />
+        </>
+        
+      } 
+        
+        />
+        <Route path='/Featureengineering' element={
+        <>
+        <Navbar/>
+        <Sidebar/>
+        <Featureengineer />
+        </>
+        
+      } 
+        
+        />
+        <Route path='/Imbalanceddataset' element={
+        <>
+        <Navbar/>
+        <Sidebar/>
+        <Imbalanceddataset />
+        </>
+        
+      } 
+        
+        />
+         <Route path='/Mlpipeline' element={
+        <>
+        <Navbar/>
+        <Sidebar/>
+        <Mlpipeline  />
+        </>
+        
+      } 
+        
+        />
+        
         <Route path='/signup' element={<Signuppage />} />
         <Route path='/forgetpass' element={<Forgetpass/>} />
       </Routes>

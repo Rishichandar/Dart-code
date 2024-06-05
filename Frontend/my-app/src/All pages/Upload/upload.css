@@ -103,23 +103,12 @@
   }
 }
 
-#upload-btn {
-  width: 100px;
-  height: 40px;
-  position: absolute;
-  bottom: 30px;
-  right: 20px;
-  color: rgb(255, 255, 255);
-  border-radius: 25px;
-  backdrop-filter: blur(2px);
-  box-shadow: 0 8px 32px 0 rgba(103, 107, 170, 0.37);
- 
-}
+
 
 #file-name {
   position: relative;
-  left: 300px;
-  top: 30px;
+  left: 500px;
+  top: 20px;
   font-size: 1.0rem;
   color: #333;
 }
@@ -135,7 +124,7 @@
   border-collapse: collapse;
   width: 100%;
   position: relative;
-  top: 50px;
+ 
 }
 
 .csv-table th, .csv-table td {
@@ -156,7 +145,8 @@
 .container {
   display: flex;
   justify-content: center;
-  margin-left: 130px;
+  margin-left: 100px;
+  margin-top: 40px;
 }
 
 .table-container {
@@ -167,8 +157,39 @@
 
 }
 #download{
-  position: absolute;
+ 
   width: 57px;
-  right: 40px;
-  margin-top: 20px;
+  position: absolute;
+  bottom: 30px;
+  right: 20px;
+}
+#upload-btn {
+  width: 100px;
+  height: 40px;
+  position: relative;
+  left: 230px;
+  background-color: #315b7c;
+  top: 20px;
+  color: rgb(255, 255, 255);
+  border-radius: 25px;
+  backdrop-filter: blur(2px);
+  box-shadow: 0 8px 32px 0 rgba(103, 107, 170, 0.37);
+ 
+}
+.drawer-content {
+  width: 250px;
+  padding: 10px;
+}
+
+.drawer-list-item {
+  cursor: pointer;
+}
+
+.drawer-list-item:hover {
+  background-color: #f0f0f0;
+}
+#arrow{
+  position: relative;
+  top: 200px;
+  font-size: larger;
 }

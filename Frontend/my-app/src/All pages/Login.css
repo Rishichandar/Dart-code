@@ -19,7 +19,7 @@
 }
 
 .right-section {
-  background-color: #8CB9BD; /* Darker gray color #8CB9BD */
+  background-color: #A9B388; /* Darker gray color #8CB9BD */
   transform: translateX(100%);
   animation: slideIn 1s forwards;
   z-index: 1;

@@ -19,7 +19,7 @@
 }
 
 .right-section1 {
-  background-color: #8CB9BD; /* Darker gray color */
+  background-color: #A9B388; /* Darker gray color */
   transform: translateX(-100%);
   animation: slideIn 1s forwards;
 }

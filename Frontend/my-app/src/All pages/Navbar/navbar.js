@@ -62,7 +62,7 @@ return(
     <nav  className="navbar">
      <span></span>
     <Box mr={10}>
-            <Avatar onClick={handleOpen} style={{ cursor: "pointer",marginRight:"20px",backgroundColor: "#3C5B6F"  }}></Avatar>
+            <Avatar onClick={handleOpen} style={{ cursor: "pointer",marginRight:"-30px",backgroundColor: "#3C5B6F"  }}></Avatar>
           </Box>
     <Modal
           open={open}
@@ -110,7 +110,7 @@ return(
                  
                   Sign Out
                 </Button> 
-              </Box>
+              </Box>  
             </Box>
 
             <Divider />

@@ -4,26 +4,33 @@ import React, { useState } from 'react';
 import Button from '@mui/material/Button';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { toast } from "react-toastify";
-import Fab from '@mui/material/Fab';
-import DownloadIcon from '@mui/icons-material/Download';
+import { MdCloudDownload } from "react-icons/md";
+import { IconButton, Drawer, List, ListItem, ListItemText } from '@mui/material';
+import { Close as CloseIcon } from '@mui/icons-material';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import {Divider} from "@mui/material";
+import {Link} from "react-router-dom";
 
 export default function Upload() {
     const [fileName, setFileName] = useState('');
     const [fileContent, setFileContent] = useState(null);
     const [processedData, setProcessedData] = useState(null);
-    const [fileAdded, setFileAdded] = useState(false); // State to track if file is added
+    const [fileAdded, setFileAdded] = useState(false);
+    const [toggleBoxOpen, setToggleBoxOpen] = useState(false);
 
     const handleFileChange = async (event) => {
         const file = event.target.files[0];
         if (file) {
             setFileName(file.name);
             setFileContent(file);
-            setFileAdded(true); // Set fileAdded to true when file is added
-            await uploadFile(file); // Call uploadFile immediately after setting fileContent
+            setFileAdded(true);
+            setToggleBoxOpen(true);
+            await uploadFile(file);
         } else {
             setFileName('');
             setFileContent(null);
-            setFileAdded(false); // Set fileAdded to false when no file is added
+            setFileAdded(false);
+            setToggleBoxOpen(false);
         }
     };
 
@@ -50,45 +57,84 @@ export default function Upload() {
             toast.error("Error uploading file");
         }
     };
-//for download as csv
 
-const downloadCSV = () => {
-    if (!processedData) return;
+    const downloadCSV = () => {
+        if (!processedData) return;
 
-    // Convert columns and rows to CSV format
-    const headers = processedData.columns.map(col => `"${col}"`).join(',');
-    const rows = processedData.data.map(row => row.map(cell => `"${cell}"`).join(',')).join('\n');
-    const csvContent = `${headers}\n${rows}`;
+        const headers = processedData.columns.map(col => `"${col}"`).join(',');
+        const rows = processedData.data.map(row => row.map(cell => `"${cell}"`).join(',')).join('\n');
+        const csvContent = `${headers}\n${rows}`;
 
-    // Create a Blob from the CSV content
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.setAttribute('download', 'processed_data.csv');
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-};
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'processed_data.csv');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+
+    const handleToggleBoxClose = () => {
+        setToggleBoxOpen(false);
+    };
+
+    const handleToggleBoxOpen = () => {
+        setToggleBoxOpen(true);
+    };
 
     return (
         <div>
-              {fileAdded && ( // Conditionally render the download button
-                <Fab color="primary" aria-label="add" id='download' onClick={downloadCSV}>
-                    < DownloadIcon />
-                </Fab>
-            )} 
+            {fileAdded && (
+                <button id='download' onClick={downloadCSV} style={{ border: 'none', background: "none" }}>
+                    <MdCloudDownload color='grey' size={35} />
+                </button>
+            )}
             <Button
-            color="primary"
+                color="primary"
                 id='upload-btn'
                 component="label"
                 variant="contained"
                 startIcon={<CloudUploadIcon />}
             >
-                file
+                File
                 <input type="file" onChange={handleFileChange} style={{ display: "none" }} />
             </Button>
-            {fileName && <span id="file-name">{fileName}</span>}
+            {fileAdded && (
+            <IconButton onClick={handleToggleBoxOpen} style={{ float: 'right' }}>
+                <ChevronLeftIcon id="arrow" />
+            </IconButton>
+             )}
+            <Drawer anchor="right" open={toggleBoxOpen} onClose={handleToggleBoxClose}>
+                <div style={{ width: 200, padding: 16 }}>
+                    <IconButton onClick={handleToggleBoxClose} style={{ float: 'right' }}>
+                        <CloseIcon />
+                    </IconButton>
+                    <h3>Process</h3>
+                    <List >
+                        <ListItem button >
+                            <Link to="/data-preproccess" style={{ textDecoration: 'none', color: 'black' }}><span>Data-preprocessing</span></Link>
+                        </ListItem>
+                        <Divider />
+                        <ListItem button>
+                            <Link to="/text-preproccess" style={{ textDecoration: 'none', color: 'black' }}><span>Text-preproccessing</span></Link>
+                        </ListItem>
+                        <Divider />
+                        <ListItem button>
+                           <Link to="/Featureengineering" style={{ textDecoration: 'none', color: 'black' }}><span>Feature Engineering</span></Link>
+                        </ListItem>
+                        <Divider />
+                        <ListItem button>
+                            <Link to="/Imbalanceddataset" style={{ textDecoration: 'none', color: 'black' }}><span>Handling Imbalanced Dataset</span></Link>
+                        </ListItem>
+                        <Divider />
+                        <ListItem button>
+                            <Link to="/Mlpipeline" style={{ textDecoration: 'none', color: 'black' }}><span>Ml-Pipeline</span></Link>
+                        </ListItem>
+                        <Divider />
+                    </List>
+                </div>
+            </Drawer>
             <div className="container">
                 {processedData && (
                     <div className="table-container">

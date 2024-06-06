@@ -1,0 +1,89 @@
+.csv-table1 {
+    border-collapse: collapse;
+    width: 100%;
+    position: relative;
+   
+   
+  }
+  
+  .csv-table1 th, .csv-table1 td {
+    border: 1px solid #c4c1c1;
+    text-align: center;
+    padding: 10px;
+  }
+  
+  .csv-table1 th {
+    background-color: #f2f2f2;
+    font-size: 12px;
+    font-weight: 500;
+    position: sticky; /* Key property for fixed header */
+    top: 0; /* Ensures header sticks to the top on scroll */
+    z-index: 1; /* Layer on top of content for proper visibility */
+  }
+  
+  .data-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 70px;
+    margin-left: 100px;
+   
+  }
+  
+  .table-container1 {
+    max-height: 420px;
+    overflow: auto;
+    width: 70%;
+    position: relative;
+    left: 230px;
+  
+  
+  }
+  .sidebar {
+    position: fixed;
+    top: 0;
+    right: -170px; /* Initially hidden */
+    width: 160px;
+    height: 100%;
+    background-color: #30475E;
+    color: white;
+    transition: right 0.3s ease;
+    border-top-left-radius: 50px;
+    border-bottom-left-radius: 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    z-index: 1;
+}
+
+
+.sidebar.open {
+    right: 0;
+}
+
+.toggle-button {
+    position: absolute;
+    top: 300px;
+    left: -44px;
+    width: 40px;
+    height: 40px;
+    background-color: #2e2b2b;
+    color: rgb(255, 255, 255);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-top-left-radius: 30px;
+    border-bottom-left-radius: 30px;
+    border: 2px solid white;
+}
+
+.sidebar-content {
+    margin-top: 60px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.toggle-button:hover {
+    background-color: #1f1e1e;
+}

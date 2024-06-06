@@ -1,6 +1,5 @@
 
-
-import React, { useState } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import Button from '@mui/material/Button';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { toast } from "react-toastify";
@@ -8,8 +7,10 @@ import { MdCloudDownload } from "react-icons/md";
 import { IconButton, Drawer, List, ListItem, ListItemText } from '@mui/material';
 import { Close as CloseIcon } from '@mui/icons-material';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import {Divider} from "@mui/material";
-import {Link} from "react-router-dom";
+import { Divider } from "@mui/material";
+import { Link } from "react-router-dom";
+import { CsvContext } from '../csvcontext/csvcontext';
+import { useNavigate } from 'react-router-dom';
 
 export default function Upload() {
     const [fileName, setFileName] = useState('');
@@ -17,6 +18,19 @@ export default function Upload() {
     const [processedData, setProcessedData] = useState(null);
     const [fileAdded, setFileAdded] = useState(false);
     const [toggleBoxOpen, setToggleBoxOpen] = useState(false);
+    const { csvData, setCsvData } = useContext(CsvContext);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        // Retrieve CSV data from localStorage on component mount
+        const savedData = localStorage.getItem('csvData');
+        if (savedData) {
+            const parsedData = JSON.parse(savedData);
+            setProcessedData(parsedData);
+            setCsvData(parsedData);
+            setFileAdded(true);
+        }
+    }, []);
 
     const handleFileChange = async (event) => {
         const file = event.target.files[0];
@@ -50,7 +64,13 @@ export default function Upload() {
             });
 
             const data = await response.json();
-            setProcessedData(parseCSV(data.data));
+            const parsedData = parseCSV(data.data);
+            setProcessedData(parsedData);
+            setCsvData(parsedData); // Store the data in context
+
+            // Save the processed data to localStorage
+            localStorage.setItem('csvData', JSON.stringify(parsedData));
+
             toast.success("File uploaded successfully");
         } catch (error) {
             console.error('Error:', error);
@@ -83,6 +103,10 @@ export default function Upload() {
         setToggleBoxOpen(true);
     };
 
+    const handleDataPreprocessClick = () => {
+        navigate('/data-preproccess');
+    };
+
     return (
         <div>
             {fileAdded && (
@@ -101,18 +125,18 @@ export default function Upload() {
                 <input type="file" onChange={handleFileChange} style={{ display: "none" }} />
             </Button>
             {fileAdded && (
-            <IconButton onClick={handleToggleBoxOpen} style={{ float: 'right' }}>
-                <ChevronLeftIcon id="arrow" />
-            </IconButton>
-             )}
+                <IconButton onClick={handleToggleBoxOpen} style={{ float: 'right' }}>
+                    <ChevronLeftIcon id="arrow" />
+                </IconButton>
+            )}
             <Drawer anchor="right" open={toggleBoxOpen} onClose={handleToggleBoxClose}>
-                <div style={{ width: 200, padding: 16 }}>
+                <div style={{ width: 200, padding: 17 }}>
                     <IconButton onClick={handleToggleBoxClose} style={{ float: 'right' }}>
                         <CloseIcon />
                     </IconButton>
                     <h3>Process</h3>
-                    <List >
-                        <ListItem button >
+                    <List style={{ marginTop: '150px' }}>
+                        <ListItem button onClick={handleDataPreprocessClick}>
                             <Link to="/data-preproccess" style={{ textDecoration: 'none', color: 'black' }}><span>Data-preprocessing</span></Link>
                         </ListItem>
                         <Divider />
@@ -121,7 +145,7 @@ export default function Upload() {
                         </ListItem>
                         <Divider />
                         <ListItem button>
-                           <Link to="/Featureengineering" style={{ textDecoration: 'none', color: 'black' }}><span>Feature Engineering</span></Link>
+                            <Link to="/Featureengineering" style={{ textDecoration: 'none', color: 'black' }}><span>Feature Engineering</span></Link>
                         </ListItem>
                         <Divider />
                         <ListItem button>
@@ -162,3 +186,4 @@ export default function Upload() {
         </div>
     );
 }
+

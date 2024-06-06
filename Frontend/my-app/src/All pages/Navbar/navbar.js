@@ -29,8 +29,8 @@ export default function Navbar(){
 
     //for logout
     const handleLogout = () => {
-      
-     
+       // Clear CSV data from local storage
+      localStorage.removeItem('csvData');
       navigate("/");
     };
   //for username

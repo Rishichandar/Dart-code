@@ -1,35 +1,165 @@
+// import './App.css';
+// import Loginpage from './All pages/Login page';
+// import Forgetpass from './All pages/Forgetpass';
+// import Main from './All pages/main';
+// import "./All pages/main.css"
+// import "./All pages/Login.css"
+// import "./All pages/Forgetpass.css"
+// import "react-toastify/dist/ReactToastify.css";
+// import Signuppage from './All pages/Signup';
+// import Sidebar from './All pages/Sidebar/sidebar';
+// import "./All pages/Sidebar/sidebar.css"
+// import Navbar from './All pages/Navbar/navbar';
+// import "./All pages/Navbar/navbar.css"
+// import { ToastContainer } from "react-toastify";
+// import { BrowserRouter as Router, Routes, Route} from "react-router-dom";
+// import Upload from './All pages/Upload/upload';
+// import "./All pages/Upload/upload.css"
+// import "./All pages/Signup.css"
+// import Datapreproccessing from './All pages/datapreproccessing/datapreproccess';
+// import "./All pages/datapreproccessing/datapreproccess.css"
+// import Textpreproccessing from './All pages/textpreproccessing/textpreproccess';
+// import "./All pages/textpreproccessing/textpreproccess.css"
+// import Featureengineer from './All pages/featureengineering/featureengineer';
+// import "./All pages/featureengineering/featureengineer.css"
+// import Imbalanceddataset from './All pages/imbalanceddataset/imbalanceddataset';
+// import "./All pages/imbalanceddataset/imbalanceddataset.css"
+// import Mlpipeline from './All pages/mlpipeline/mlpipeline';
+// import "./All pages/mlpipeline/mlpipeline.css"
+// import { CsvProvider } from './All pages/csvcontext/csvcontext';
+// function App() {
+//   return (
+//      <div>
+//          <ToastContainer
+//         position="bottom-right"
+//         autoClose={3000}
+//         hideProgressBar={false}
+//         newestOnTop={false}
+//         closeOnClick
+//         rtl={false}
+//         pauseOnFocusLoss
+//         draggable
+//         pauseOnHover
+//         theme="light"
+//       />
+//     <Router>
+//       <Routes>
+//         <Route path='/' element={<Loginpage />} />
+//         <Route path='/main' element={
+//         <>
+//         <Navbar/>
+//         <Sidebar/>
+//         <Main />
+//         </>
+        
+//       } 
+        
+//         />
+//         <Route path='/upload' element={
+//         <>
+//         <Navbar/>
+//         <Sidebar/>
+//         <Upload />
+//         </>
+        
+//       } 
+        
+//         />
+//       <Route path='/data-preproccess' element={
+//         <>
+//         <Navbar/>
+//         <Sidebar/>
+//         <Datapreproccessing />
+//         </>
+        
+//       } 
+        
+//         />
+//         <Route path='/text-preproccess' element={
+//         <>
+//         <Navbar/>
+//         <Sidebar/>
+//         <Textpreproccessing />
+//         </>
+        
+//       } 
+        
+//         />
+//         <Route path='/Featureengineering' element={
+//         <>
+//         <Navbar/>
+//         <Sidebar/>
+//         <Featureengineer />
+//         </>
+        
+//       } 
+        
+//         />
+//         <Route path='/Imbalanceddataset' element={
+//         <>
+//         <Navbar/>
+//         <Sidebar/>
+//         <Imbalanceddataset />
+//         </>
+        
+//       } 
+        
+//         />
+//          <Route path='/Mlpipeline' element={
+//         <>
+//         <Navbar/>
+//         <Sidebar/>
+//         <Mlpipeline  />
+//         </>
+        
+//       } 
+        
+//         />
+        
+//         <Route path='/signup' element={<Signuppage />} />
+//         <Route path='/forgetpass' element={<Forgetpass/>} />
+//       </Routes>
+//     </Router>
+    
+//     </div>
+//   );
+// }
+
+// export default App;
 import './App.css';
 import Loginpage from './All pages/Login page';
 import Forgetpass from './All pages/Forgetpass';
 import Main from './All pages/main';
-import "./All pages/main.css"
-import "./All pages/Login.css"
-import "./All pages/Forgetpass.css"
+import "./All pages/main.css";
+import "./All pages/Login.css";
+import "./All pages/Forgetpass.css";
 import "react-toastify/dist/ReactToastify.css";
 import Signuppage from './All pages/Signup';
 import Sidebar from './All pages/Sidebar/sidebar';
-import "./All pages/Sidebar/sidebar.css"
+import "./All pages/Sidebar/sidebar.css";
 import Navbar from './All pages/Navbar/navbar';
-import "./All pages/Navbar/navbar.css"
+import "./All pages/Navbar/navbar.css";
 import { ToastContainer } from "react-toastify";
-import { BrowserRouter as Router, Routes, Route} from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Upload from './All pages/Upload/upload';
-import "./All pages/Upload/upload.css"
-import "./All pages/Signup.css"
+import "./All pages/Upload/upload.css";
+import "./All pages/Signup.css";
 import Datapreproccessing from './All pages/datapreproccessing/datapreproccess';
-import "./All pages/datapreproccessing/datapreproccess.css"
+import "./All pages/datapreproccessing/datapreproccess.css";
 import Textpreproccessing from './All pages/textpreproccessing/textpreproccess';
-import "./All pages/textpreproccessing/textpreproccess.css"
+import "./All pages/textpreproccessing/textpreproccess.css";
 import Featureengineer from './All pages/featureengineering/featureengineer';
-import "./All pages/featureengineering/featureengineer.css"
+import "./All pages/featureengineering/featureengineer.css";
 import Imbalanceddataset from './All pages/imbalanceddataset/imbalanceddataset';
-import "./All pages/imbalanceddataset/imbalanceddataset.css"
+import "./All pages/imbalanceddataset/imbalanceddataset.css";
 import Mlpipeline from './All pages/mlpipeline/mlpipeline';
-import "./All pages/mlpipeline/mlpipeline.css"
+import "./All pages/mlpipeline/mlpipeline.css";
+import { CsvProvider } from './All pages/csvcontext/csvcontext';
+
 function App() {
   return (
-     <div>
-         <ToastContainer
+    <div>
+      <ToastContainer
         position="bottom-right"
         autoClose={3000}
         hideProgressBar={false}
@@ -41,85 +171,64 @@ function App() {
         pauseOnHover
         theme="light"
       />
-    <Router>
-      <Routes>
-        <Route path='/' element={<Loginpage />} />
-        <Route path='/main' element={
-        <>
-        <Navbar/>
-        <Sidebar/>
-        <Main />
-        </>
-        
-      } 
-        
-        />
-        <Route path='/upload' element={
-        <>
-        <Navbar/>
-        <Sidebar/>
-        <Upload />
-        </>
-        
-      } 
-        
-        />
-      <Route path='/data-preproccess' element={
-        <>
-        <Navbar/>
-        <Sidebar/>
-        <Datapreproccessing />
-        </>
-        
-      } 
-        
-        />
-        <Route path='/text-preproccess' element={
-        <>
-        <Navbar/>
-        <Sidebar/>
-        <Textpreproccessing />
-        </>
-        
-      } 
-        
-        />
-        <Route path='/Featureengineering' element={
-        <>
-        <Navbar/>
-        <Sidebar/>
-        <Featureengineer />
-        </>
-        
-      } 
-        
-        />
-        <Route path='/Imbalanceddataset' element={
-        <>
-        <Navbar/>
-        <Sidebar/>
-        <Imbalanceddataset />
-        </>
-        
-      } 
-        
-        />
-         <Route path='/Mlpipeline' element={
-        <>
-        <Navbar/>
-        <Sidebar/>
-        <Mlpipeline  />
-        </>
-        
-      } 
-        
-        />
-        
-        <Route path='/signup' element={<Signuppage />} />
-        <Route path='/forgetpass' element={<Forgetpass/>} />
-      </Routes>
-    </Router>
-    
+      <CsvProvider>
+        <Router>
+          <Routes>
+            <Route path='/' element={<Loginpage />} />
+            <Route path='/main' element={
+              <>
+                <Navbar />
+                <Sidebar />
+                <Main />
+              </>
+            } />
+            <Route path='/upload' element={
+              <>
+                <Navbar />
+                <Sidebar />
+                <Upload />
+              </>
+            } />
+            <Route path='/data-preproccess' element={
+              <>
+                <Navbar />
+                <Sidebar />
+                <Datapreproccessing />
+              </>
+            } />
+            <Route path='/text-preproccess' element={
+              <>
+                <Navbar />
+                <Sidebar />
+                <Textpreproccessing />
+              </>
+            } />
+            <Route path='/Featureengineering' element={
+              <>
+                <Navbar />
+                <Sidebar />
+                <Featureengineer />
+              </>
+            } />
+            <Route path='/Imbalanceddataset' element={
+              <>
+                <Navbar />
+                <Sidebar />
+                <Imbalanceddataset />
+              </>
+            } />
+            <Route path='/Mlpipeline' element={
+              <>
+                <Navbar />
+                <Sidebar />
+                <Mlpipeline />
+              </>
+            } />
+            <Route path='/signup' element={<Signuppage />} />
+            <Route path='/forgetpass' element={<Forgetpass />} />
+          </Routes>
+        </Router>
+      </CsvProvider>
     </div>
   );
 }

@@ -32,7 +32,7 @@
   overflow: auto;
   width: 70%;
   position: relative;
-  left: 330px;
+  left: 320px;
 }
 
 .sidebar {
@@ -99,4 +99,13 @@
   margin-right: 6px; /* Adjust the margin as needed */
 }
 
-
+#data-preproccess{
+  position: absolute;
+  left: 320px;
+  top: 110px;
+}
+#mode-select{
+  position: relative;
+  left: 750px;
+  top: 30px;
+}

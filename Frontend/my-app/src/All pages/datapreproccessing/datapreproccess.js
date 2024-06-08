@@ -4,17 +4,21 @@
 // import SwitchRightIcon from '@mui/icons-material/SwitchRight';
 // import SwitchLeftIcon from '@mui/icons-material/SwitchLeft';
 // import ArrowRightIcon from '@mui/icons-material/ArrowRight';
+// import axios from 'axios';
 
 // export default function Datapreprocessing() {
 //     const { csvData } = useContext(CsvContext);
 //     const [persistedData, setPersistedData] = useState(null);
 //     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 //     const [activeItem, setActiveItem] = useState(null);
+//     const [processedData, setProcessedData] = useState(null);
+//     const [selectedTechnique, setSelectedTechnique] = useState(null);
 
 //     useEffect(() => {
 //         const savedData = localStorage.getItem('csvData');
 //         if (savedData) {
-//             setPersistedData(JSON.parse(savedData));
+//             const parsedData = JSON.parse(savedData);
+//             setPersistedData(parsedData);
 //         }
 //     }, []);
 
@@ -25,10 +29,72 @@
 //         }
 //     }, [csvData]);
 
-//     const dataToDisplay = csvData || persistedData;
+//     const dataToDisplay = processedData || csvData || persistedData;
 
 //     const handleItemClick = (item) => {
 //         setActiveItem(activeItem === item ? null : item);
+//     };
+
+//     const handleReshapingClick = async (method, text) => {
+//         try {
+//             if (!persistedData || !persistedData.data || !persistedData.columns) {
+//                 console.error('No file found in persistedData');
+//                 alert('No file found in persistedData');
+//                 return;
+//             }
+
+//             const headers = persistedData.columns.join(',');
+//             const rows = persistedData.data.map(row => row.join(',')).join('\n');
+//             const csvContent = `${headers}\n${rows}`;
+
+//             const csvData = new Blob([csvContent], { type: 'text/csv' });
+//             const formData = new FormData();
+//             formData.append('file', csvData, 'data.csv');
+//             formData.append('method', method);
+
+//             const response = await axios.post('http://127.0.0.1:5000/transform_data', formData, {
+//                 headers: {
+//                     'Content-Type': 'multipart/form-data'
+//                 }
+//             });
+
+//             setProcessedData(response.data.transformed_data);
+//             setSelectedTechnique(text);
+//         } catch (error) {
+//             console.error('Error processing the data:', error);
+//             alert('Error processing the data');
+//         }
+//     };
+
+//     const handleAugmentationClick = async (method, text) => {
+//         try {
+//             if (!persistedData || !persistedData.data || !persistedData.columns) {
+//                 console.error('No file found in persistedData');
+//                 alert('No file found in persistedData');
+//                 return;
+//             }
+
+//             const headers = persistedData.columns.join(',');
+//             const rows = persistedData.data.map(row => row.join(',')).join('\n');
+//             const csvContent = `${headers}\n${rows}`;
+
+//             const csvData = new Blob([csvContent], { type: 'text/csv' });
+//             const formData = new FormData();
+//             formData.append('file', csvData, 'data.csv');
+//             formData.append('method', method);
+
+//             const response = await axios.post('http://127.0.0.1:5000/handle_missing_values', formData, {
+//                 headers: {
+//                     'Content-Type': 'multipart/form-data'
+//                 }
+//             });
+
+//             setProcessedData(response.data.processed_data);
+//             setSelectedTechnique(text);
+//         } catch (error) {
+//             console.error('Error processing the data:', error);
+//             alert('Error processing the data');
+//         }
 //     };
 
 //     const renderDetails = (item) => {
@@ -36,34 +102,59 @@
 //             case 'Data Augmentation':
 //                 return (
 //                     <ul style={{ listStyleType: 'none', padding: '10px', textAlign: 'left' }}>
-//                         <li style={{ marginBottom: '7px' }} className="icon-with-text"><ArrowRightIcon /> Mean</li>
-//                         <li style={{ marginBottom: '7px' }} className="icon-with-text"><ArrowRightIcon /> Mode</li>
-//                         <li style={{ marginBottom: '7px' }} className="icon-with-text"><ArrowRightIcon /> Median</li>
-//                         <li style={{ marginBottom: '7px' }} className="icon-with-text"><ArrowRightIcon /> Constant</li>
-//                         <li style={{ marginBottom: '7px' }} className="icon-with-text"><ArrowRightIcon /> Linear Regression</li>
-//                         <li style={{ marginBottom: '7px' }} className="icon-with-text"><ArrowRightIcon /> Random Forest</li>
+//                         <li style={{ marginBottom: '7px' }} className="icon-with-text" onClick={() => handleAugmentationClick('mean', 'Mean')}>
+//                             <ArrowRightIcon /> Mean
+//                         </li>
+//                         <li style={{ marginBottom: '7px' }} className="icon-with-text" onClick={() => handleAugmentationClick('mode', 'Mode')}>
+//                             <ArrowRightIcon /> Mode
+//                         </li>
+//                         <li style={{ marginBottom: '7px' }} className="icon-with-text" onClick={() => handleAugmentationClick('median', 'Median')}>
+//                             <ArrowRightIcon /> Median
+//                         </li>
+//                         <li style={{ marginBottom: '7px' }} className="icon-with-text" onClick={() => handleAugmentationClick('constant', 'Constant')}>
+//                             <ArrowRightIcon /> Constant
+//                         </li>
+//                         <li style={{ marginBottom: '7px' }} className="icon-with-text" onClick={() => handleAugmentationClick('linear', 'Linear Regression')}>
+//                             <ArrowRightIcon /> Linear Regression
+//                         </li>
+//                         <li style={{ marginBottom: '7px' }} className="icon-with-text" onClick={() => handleAugmentationClick('random_forest', 'Random Forest')}>
+//                             <ArrowRightIcon /> Random Forest
+//                         </li>
 //                     </ul>
 //                 );
 //             case 'Data Reshaping':
 //                 return (
 //                     <ul style={{ listStyleType: 'none', padding: '10px', textAlign: 'left' }}>
-//                         <li style={{ marginBottom: '7px' }} className="icon-with-text"><ArrowRightIcon /> Standardize</li>
-//                         <li style={{ marginBottom: '7px' }} className="icon-with-text"><ArrowRightIcon /> Normalize</li>
-//                         <li style={{ marginBottom: '7px' }} className="icon-with-text"><ArrowRightIcon /> Box-cox</li>
-//                         <li style={{ marginBottom: '7px' }} className="icon-with-text"><ArrowRightIcon /> Yoe-Jhonson</li>
-//                         <li style={{ marginBottom: '7px' }} className="icon-with-text"><ArrowRightIcon /> Scaler</li>
-//                         <li style={{ marginBottom: '7px' }} className="icon-with-text"><ArrowRightIcon /> Min-Max</li>
-//                         <li style={{ marginBottom: '7px' }} className="icon-with-text"><ArrowRightIcon /> Log2</li>
+//                         <li style={{ marginBottom: '7px' }} className="icon-with-text" onClick={() => handleReshapingClick('standardize', 'Standardize')}>
+//                             <ArrowRightIcon /> Standardize
+//                         </li>
+//                         <li style={{ marginBottom: '7px' }} className="icon-with-text" onClick={() => handleReshapingClick('normalize', 'Normalize')}>
+//                             <ArrowRightIcon /> Normalize
+//                         </li>
+//                         <li style={{ marginBottom: '7px' }} className="icon-with-text" onClick={() => handleReshapingClick('boxcox', 'Box-Cox')}>
+//                             <ArrowRightIcon /> Box-Cox
+//                         </li>
+//                         <li style={{ marginBottom: '7px' }} className="icon-with-text" onClick={() => handleReshapingClick('yeojohnson', 'Yeo-Johnson')}>
+//                             <ArrowRightIcon /> Yeo-Johnson
+//                         </li>
+//                         <li style={{ marginBottom: '7px' }} className="icon-with-text" onClick={() => handleReshapingClick('scaler', 'Scaler')}>
+//                             <ArrowRightIcon /> Scaler
+//                         </li>
+//                         <li style={{ marginBottom: '7px' }} className="icon-with-text" onClick={() => handleReshapingClick('minmax', 'Min-Max')}>
+//                             <ArrowRightIcon /> Min-Max
+//                         </li>
+//                         <li style={{ marginBottom: '7px' }} className="icon-with-text" onClick={() => handleReshapingClick('log2', 'Log2')}>
+//                             <ArrowRightIcon /> Log2
+//                         </li>
 //                     </ul>
 //                 );
 //             case 'Outlier Analysis':
 //                 return (
 //                     <ul style={{ listStyleType: 'none', padding: '10px', textAlign: 'left' }}>
-//                         <li style={{ marginBottom: '7px' }} className="icon-with-text"><ArrowRightIcon />Z-Score</li>
-//                         <li style={{ marginBottom: '7px' }} className="icon-with-text"><ArrowRightIcon />IQR</li>
+//                         <li style={{ marginBottom: '7px' }} className="icon-with-text"><ArrowRightIcon /> Z-Score</li>
+//                         <li style={{ marginBottom: '7px' }} className="icon-with-text"><ArrowRightIcon /> IQR</li>
 //                     </ul>
 //                 );
-//             // Add more cases for other items as needed
 //             default:
 //                 return null;
 //         }
@@ -71,6 +162,10 @@
 
 //     return (
 //         <>
+//             <span id='data-preproccess'>Datapreprocessing</span>
+//             {selectedTechnique && (
+//                 <span id='mode-select'>{selectedTechnique}</span>
+//             )}
 //             <div className="data-container"></div>
 //             {dataToDisplay && (
 //                 <div className="table-container1">
@@ -143,6 +238,9 @@
 //         </>
 //     );
 // }
+
+
+
 import React, { useContext, useEffect, useState } from 'react';
 import { CsvContext } from '../csvcontext/csvcontext';
 import SwitchRightIcon from '@mui/icons-material/SwitchRight';
@@ -156,14 +254,13 @@ export default function Datapreprocessing() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [activeItem, setActiveItem] = useState(null);
     const [processedData, setProcessedData] = useState(null);
+    const [selectedTechnique, setSelectedTechnique] = useState(null);
 
     useEffect(() => {
         const savedData = localStorage.getItem('csvData');
         if (savedData) {
             const parsedData = JSON.parse(savedData);
-            console.log(parsedData); // Log the persistedData object
             setPersistedData(parsedData);
-            console.log(persistedData);
         }
     }, []);
 
@@ -180,65 +277,164 @@ export default function Datapreprocessing() {
         setActiveItem(activeItem === item ? null : item);
     };
 
-    const handleMethodClick = async (method) => {
+    const handleReshapingClick = async (method, text) => {
         try {
-            // Check if persistedData contains the file and the key is correct
-            console.log('persistedData:', persistedData); // Add this line for debugging
-            if (!persistedData || !persistedData.data) {
+            if (!persistedData || !persistedData.data || !persistedData.columns) {
                 console.error('No file found in persistedData');
+                alert('No file found in persistedData');
                 return;
             }
 
-            // Convert the CSV data to a Blob object
-            const csvData = new Blob([persistedData.data], { type: 'text/csv' });
+            const headers = persistedData.columns.join(',');
+            const rows = persistedData.data.map(row => row.join(',')).join('\n');
+            const csvContent = `${headers}\n${rows}`;
 
-            // Construct FormData object
+            const csvData = new Blob([csvContent], { type: 'text/csv' });
             const formData = new FormData();
-            formData.append('file', csvData, 'data.csv'); // Assuming the file name is 'data.csv'
-            formData.append('method', method); // Confirm that the method parameter is correct
+            formData.append('file', csvData, 'data.csv');
+            formData.append('method', method);
 
-            // Send POST request to the backend
+            const response = await axios.post('http://127.0.0.1:5000/transform_data', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+
+            setProcessedData(response.data.transformed_data);
+            setSelectedTechnique(text);
+        } catch (error) {
+            console.error('Error processing the data:', error);
+            alert('Error processing the data');
+        }
+    };
+
+    const handleAugmentationClick = async (method, text) => {
+        try {
+            if (!persistedData || !persistedData.data || !persistedData.columns) {
+                console.error('No file found in persistedData');
+                alert('No file found in persistedData');
+                return;
+            }
+
+            const headers = persistedData.columns.join(',');
+            const rows = persistedData.data.map(row => row.join(',')).join('\n');
+            const csvContent = `${headers}\n${rows}`;
+
+            const csvData = new Blob([csvContent], { type: 'text/csv' });
+            const formData = new FormData();
+            formData.append('file', csvData, 'data.csv');
+            formData.append('method', method);
+
             const response = await axios.post('http://127.0.0.1:5000/handle_missing_values', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
             });
 
-            // Set processed data received from the backend
             setProcessedData(response.data.processed_data);
+            setSelectedTechnique(text);
         } catch (error) {
-            console.error('Error processing the data:', error); // Check error handling
-            alert('Error processing the data'); // Consider displaying a user-friendly error message
+            console.error('Error processing the data:', error);
+            alert('Error processing the data');
         }
     };
 
+    const handleOutlierClick = async (method, text, threshold = 3, action = 'remove') => {
+        try {
+            if (!persistedData || !persistedData.data || !persistedData.columns) {
+                console.error('No file found in persistedData');
+                alert('No file found in persistedData');
+                return;
+            }
+
+            const headers = persistedData.columns.join(',');
+            const rows = persistedData.data.map(row => row.join(',')).join('\n');
+            const csvContent = `${headers}\n${rows}`;
+
+            const csvData = new Blob([csvContent], { type: 'text/csv' });
+            const formData = new FormData();
+            formData.append('file', csvData, 'data.csv');
+            formData.append('method', method);
+            formData.append('threshold', threshold);
+            formData.append('action', action);
+
+            const response = await axios.post('http://127.0.0.1:5000/handle_outliers', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+
+            setProcessedData(response.data.processed_data);
+            setSelectedTechnique(text);
+        } catch (error) {
+            console.error('Error processing outliers:', error);
+            alert('Error processing outliers');
+        }
+    };
 
     const renderDetails = (item) => {
         switch (item) {
             case 'Data Augmentation':
                 return (
                     <ul style={{ listStyleType: 'none', padding: '10px', textAlign: 'left' }}>
-                        <li style={{ marginBottom: '7px' }} className="icon-with-text" onClick={() => handleMethodClick('mean')}>
+                        <li style={{ marginBottom: '7px' }} className="icon-with-text" onClick={() => handleAugmentationClick('mean', 'Mean')}>
                             <ArrowRightIcon /> Mean
                         </li>
-                        <li style={{ marginBottom: '7px' }} className="icon-with-text" onClick={() => handleMethodClick('mode')}>
+                        <li style={{ marginBottom: '7px' }} className="icon-with-text" onClick={() => handleAugmentationClick('mode', 'Mode')}>
                             <ArrowRightIcon /> Mode
                         </li>
-                        <li style={{ marginBottom: '7px' }} className="icon-with-text" onClick={() => handleMethodClick('median')}>
+                        <li style={{ marginBottom: '7px' }} className="icon-with-text" onClick={() => handleAugmentationClick('median', 'Median')}>
                             <ArrowRightIcon /> Median
                         </li>
-                        <li style={{ marginBottom: '7px' }} className="icon-with-text" onClick={() => handleMethodClick('constant')}>
+                        <li style={{ marginBottom: '7px' }} className="icon-with-text" onClick={() => handleAugmentationClick('constant', 'Constant')}>
                             <ArrowRightIcon /> Constant
                         </li>
-                        <li style={{ marginBottom: '7px' }} className="icon-with-text" onClick={() => handleMethodClick('linear')}>
+                        <li style={{ marginBottom: '7px' }} className="icon-with-text" onClick={() => handleAugmentationClick('linear', 'Linear Regression')}>
                             <ArrowRightIcon /> Linear Regression
                         </li>
-                        <li style={{ marginBottom: '7px' }} className="icon-with-text" onClick={() => handleMethodClick('random_forest')}>
+                        <li style={{ marginBottom: '7px' }} className="icon-with-text" onClick={() => handleAugmentationClick('random_forest', 'Random Forest')}>
                             <ArrowRightIcon /> Random Forest
                         </li>
                     </ul>
                 );
-            // Add more cases for other items as needed
+            case 'Data Reshaping':
+                return (
+                    <ul style={{ listStyleType: 'none', padding: '10px', textAlign: 'left' }}>
+                        <li style={{ marginBottom: '7px' }} className="icon-with-text" onClick={() => handleReshapingClick('standardize', 'Standardize')}>
+                            <ArrowRightIcon /> Standardize
+                        </li>
+                        <li style={{ marginBottom: '7px' }} className="icon-with-text" onClick={() => handleReshapingClick('normalize', 'Normalize')}>
+                            <ArrowRightIcon /> Normalize
+                        </li>
+                        <li style={{ marginBottom: '7px' }} className="icon-with-text" onClick={() => handleReshapingClick('boxcox', 'Box-Cox')}>
+                            <ArrowRightIcon /> Box-Cox
+                        </li>
+                        <li style={{ marginBottom: '7px' }} className="icon-with-text" onClick={() => handleReshapingClick('yeojohnson', 'Yeo-Johnson')}>
+                            <ArrowRightIcon /> Yeo-Johnson
+                        </li>
+                        <li style={{ marginBottom: '7px' }} className="icon-with-text" onClick={() => handleReshapingClick('scaler', 'Scaler')}>
+                            <ArrowRightIcon /> Scaler
+                        </li>
+                        <li style={{ marginBottom: '7px' }} className="icon-with-text" onClick={() => handleReshapingClick('minmax', 'Min-Max')}>
+                            <ArrowRightIcon /> Min-Max
+                        </li>
+                        <li style={{ marginBottom: '7px' }} className="icon-with-text" onClick={() => handleReshapingClick('log2', 'Log2')}>
+                            <ArrowRightIcon /> Log2
+                        </li>
+                    </ul>
+                );
+            case 'Outlier Analysis':
+                return (
+                    
+                    <ul style={{ listStyleType: 'none', padding: '10px', textAlign: 'left' }}>
+                    <li style={{ marginBottom: '7px' }} className="icon-with-text" onClick={() => handleOutlierClick('z-score', 'Z-Score')}>
+                        <ArrowRightIcon /> Z-Score
+                    </li>
+                    <li style={{ marginBottom: '7px' }} className="icon-with-text" onClick={() => handleOutlierClick('iqr', 'IQR')}>
+                        <ArrowRightIcon /> IQR
+                    </li>
+                </ul>
+                );
             default:
                 return null;
         }
@@ -246,6 +442,10 @@ export default function Datapreprocessing() {
 
     return (
         <>
+            <span id='data-preproccess'>Datapreprocessing</span>
+            {selectedTechnique && (
+                <span id='mode-select'>{selectedTechnique}</span>
+            )}
             <div className="data-container"></div>
             {dataToDisplay && (
                 <div className="table-container1">
@@ -318,3 +518,5 @@ export default function Datapreprocessing() {
         </>
     );
 }
+
+

@@ -35,23 +35,31 @@ export default function Sidebar() {
     About: '/about',
     Contact: '/contact',
   };
+  const iconColors = {
+    'Home': 'white',
+    'Upload': 'white',
+    'About': 'white',
+    'Contact': 'white'
+  };
+  
 
   const DrawerList = (
     <Box
       sx={{
         width: mode === 'full' ? 200 : 60,
         transition: 'width 0.3s ease',
+     
       }}
       role="presentation"
     >
       <Button onClick={toggleDrawer} sx={{ margin: '10px' }}>
-        {mode === 'mini' ? <DehazeIcon style={{ marginRight: '25px', fontSize: "large" }} /> : <CloseIcon style={{ marginRight: '25px', fontSize: "large" }} />}
+        {mode === 'mini' ? <DehazeIcon style={{ marginRight: '25px', fontSize: "large",color:'white' }} /> : <CloseIcon style={{ marginRight: '25px', fontSize: "large",color:'white' }} />}
       </Button>
       <List>
         {pages.map((text) => (
           <ListItem style={{ padding: '5px', fontSize: '10px' }} key={text} disablePadding>
             <ListItemButton component={Link} to={pageLinks[text]}>
-              <ListItemIcon>
+              <ListItemIcon style={{ color: iconColors[text] }}>
                 {text === 'Home' && <HomeIcon fontSize="small" />}
                 {text === 'Upload' && <CloudUploadIcon fontSize="small" />}
                 {text === 'About' && <InfoIcon fontSize="small" />}
@@ -74,8 +82,10 @@ export default function Sidebar() {
         sx={{
           '& .MuiDrawer-paper': {
             transition: 'width 0.3s ease, margin 0.3s ease',
-            width: open ? (mode === 'full' ? 200 : 60) : 0,
+            width: open ? (mode === 'full' ? 170 : 60) : 0,
             overflowX: 'hidden',
+             background:'#538392',
+             color:'white'  
           },
         }}
       >

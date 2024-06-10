@@ -6,11 +6,13 @@ import { toast } from "react-toastify";
 import { MdCloudDownload } from "react-icons/md";
 import { IconButton, Drawer, List, ListItem, ListItemText } from '@mui/material';
 import { Close as CloseIcon } from '@mui/icons-material';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import { Divider } from "@mui/material";
 import { Link } from "react-router-dom";
 import { CsvContext } from '../csvcontext/csvcontext';
 import { useNavigate } from 'react-router-dom';
+import { MdCloudUpload } from "react-icons/md";
+import Tooltip from '@mui/material/Tooltip';
 
 export default function Upload() {
     const [fileName, setFileName] = useState('');
@@ -115,22 +117,22 @@ export default function Upload() {
                 </button>
             )}
             <Button
-                color="primary"
-                id='upload-btn'
                 component="label"
-                variant="contained"
+                id='upload-btn'
+                tabIndex={-1}
                 startIcon={<CloudUploadIcon />}
             >
-                File
+                Upload your file
                 <input type="file" onChange={handleFileChange} style={{ display: "none" }} />
             </Button>
+            
             {fileAdded && (
-                <IconButton onClick={handleToggleBoxOpen} style={{ float: 'right' }}>
-                    <ChevronLeftIcon id="arrow" />
+                <IconButton onClick={handleToggleBoxOpen} style={{ float: 'left', position: 'relative', left: '100px' }}>
+                    <ArrowForwardIosIcon id="arrow" />
                 </IconButton>
             )}
-            <Drawer anchor="right" open={toggleBoxOpen} onClose={handleToggleBoxClose}>
-                <div style={{ width: 200, padding: 17 }}>
+            <Drawer anchor="left" open={toggleBoxOpen} onClose={handleToggleBoxClose}>
+                <div style={{ width: 200, padding: 20 }}>
                     <IconButton onClick={handleToggleBoxClose} style={{ float: 'right' }}>
                         <CloseIcon />
                     </IconButton>

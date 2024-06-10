@@ -59,9 +59,6 @@ export default function Loginpage() {
     <div className="login-page">
       <div className="right-section">
         <span id='welcome-msg'>Welcome to Dart</span>
-        <span id='reg-text'>If you are a new user please <span style={{ color: 'white' }}>REGISTER</span></span>
-        <br />
-        <Button variant="outlined" style={{ marginTop: '25px', borderColor: 'white', color: 'white' }} onClick={nextPage}>Signup</Button>
       </div>
       <div className="left-section">
         <div id="login-container">

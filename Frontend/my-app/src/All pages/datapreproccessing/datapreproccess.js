@@ -1,5 +1,4 @@
 
-
 import Tooltip from '@mui/material/Tooltip';
 import React, { useContext, useEffect, useState } from 'react';
 import { CsvContext } from '../csvcontext/csvcontext';
@@ -7,6 +6,10 @@ import SwitchRightIcon from '@mui/icons-material/SwitchRight';
 import SwitchLeftIcon from '@mui/icons-material/SwitchLeft';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import axios from 'axios';
+import Button from '@mui/material/Button';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { useNavigate } from 'react-router-dom';
+
 
 export default function Datapreprocessing() {
     const { csvData } = useContext(CsvContext);
@@ -15,6 +18,9 @@ export default function Datapreprocessing() {
     const [activeItem, setActiveItem] = useState(null);
     const [processedData, setProcessedData] = useState(null);
     const [selectedTechnique, setSelectedTechnique] = useState(null);
+    const [segmentedData, setSegmentedData] = useState(null); // State variable for segmented data
+    const navigate = useNavigate();
+    console.log("segmentedData", segmentedData)
 
     useEffect(() => {
         const savedData = localStorage.getItem('csvData');
@@ -34,7 +40,7 @@ export default function Datapreprocessing() {
         // Open the sidebar after 1 second
         const timer = setTimeout(() => {
             setIsSidebarOpen(true);
-        },800);
+        }, 800);
 
         // Clear the timer on component unmount
         return () => clearTimeout(timer);
@@ -141,6 +147,59 @@ export default function Datapreprocessing() {
         }
     };
 
+
+    const handleSegmentationClick = async () => {
+        try {
+            if (!persistedData || !persistedData.data || !persistedData.columns) {
+                console.error('No file found in persistedData');
+                alert('No file found in persistedData');
+                return;
+            }
+
+            const headers = persistedData.columns.join(',');
+            const rows = persistedData.data.map(row => row.join(',')).join('\n');
+            const csvContent = `${headers}\n${rows}`;
+
+            const csvData = new Blob([csvContent], { type: 'text/csv' });
+            const formData = new FormData();
+            formData.append('file', csvData, 'data.csv');
+
+            const response = await axios.post('http://127.0.0.1:5000/segment_data', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+
+            // Check if split_data exists in the response
+            if (!response.data || !response.data.split_data) {
+                console.error('Invalid response format');
+                alert('Invalid response format');
+                return;
+            }
+
+            // Extract split data from the response
+            const { X_train, X_test, y_train, y_test,X_train_count,X_test_count, y_train_count, y_test_count,} = response.data.split_data;
+
+            // Update the state with split data
+            setSegmentedData({
+                // X_train: JSON.parse(X_train),
+                // X_test: JSON.parse(X_test),
+                // y_train: JSON.parse(y_train),
+                // y_test: JSON.parse(y_test),
+                X_train_count,
+                X_test_count,
+                y_train_count,
+                y_test_count
+            });
+
+            setSelectedTechnique('Data Segmentation');
+        } catch (error) {
+            console.error('Error processing the data:', error);
+            alert('Error processing the data');
+        }
+    };
+
+
     const renderDetails = (item) => {
         switch (item) {
             case 'Data Augmentation':
@@ -194,55 +253,87 @@ export default function Datapreprocessing() {
                 );
             case 'Outlier Analysis':
                 return (
-                    
+
                     <ul style={{ listStyleType: 'none', padding: '10px', textAlign: 'left' }}>
-                    <li style={{ marginBottom: '7px' }} className="icon-with-text" onClick={() => handleOutlierClick('z-score', 'Z-Score')}>
-                        <ArrowRightIcon /> Z-Score
-                    </li>
-                    <li style={{ marginBottom: '7px' }} className="icon-with-text" onClick={() => handleOutlierClick('iqr', 'IQR')}>
-                        <ArrowRightIcon /> IQR
-                    </li>
-                </ul>
+                        <li style={{ marginBottom: '7px' }} className="icon-with-text" onClick={() => handleOutlierClick('z-score', 'Z-Score')}>
+                            <ArrowRightIcon /> Z-Score
+                        </li>
+                        <li style={{ marginBottom: '7px' }} className="icon-with-text" onClick={() => handleOutlierClick('iqr', 'IQR')}>
+                            <ArrowRightIcon /> IQR
+                        </li>
+                    </ul>
                 );
             default:
                 return null;
         }
     };
 
+
+    const uploadPage = () => {
+        navigate('/upload');
+
+    };
+
     return (
         <>
+            <Button variant="outlined" style={{ float: 'right', marginRight: '50px', marginTop: '15px', }} onClick={uploadPage}>< ArrowBackIcon fontSize="smaller" style={{ position: 'relative', right: '3px' }} />Back</Button>
             <span id='data-preproccess'>Datapreprocessing</span>
             {selectedTechnique && (
                 <span id='mode-select'>{selectedTechnique}</span>
             )}
-            <div className="data-container"></div>
-            {dataToDisplay && (
-                <div className="table-container1">
-                    <table className="csv-table1">
-                        <thead>
-                            <tr>
-                                {dataToDisplay.columns.map((header, index) => (
-                                    <th key={index}>{header}</th>
-                                ))}
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {dataToDisplay.data.map((row, rowIndex) => (
-                                <tr key={rowIndex}>
-                                    {row.map((cell, colIndex) => (
-                                        <td key={colIndex}>{cell}</td>
-                                    ))}
-                                </tr>
+
+<div className="data-container"></div>
+{dataToDisplay && (
+    selectedTechnique !== 'Data Segmentation' ? (
+        <div className="table-container1">
+            <table className="csv-table1">
+                <thead>
+                    <tr>
+                        {dataToDisplay.columns.map((header, index) => (
+                            <th key={index}>{header}</th>
+                        ))}
+                    </tr>
+                </thead>
+                <tbody>
+                    {dataToDisplay.data.map((row, rowIndex) => (
+                        <tr key={rowIndex}>
+                            {row.map((cell, colIndex) => (
+                                <td key={colIndex}>{cell}</td>
                             ))}
-                        </tbody>
-                    </table>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+        </div>
+    ) : (
+        segmentedData && (
+            <>
+                
+            <div id='train-text'> 
+                <li style={{ marginBottom: '7px' }}>
+                    <strong>X_train_count:</strong> {segmentedData.X_train_count}
+                </li>
+                <li style={{ marginBottom: '7px' }}>
+                    <strong>X_test_count:</strong> {segmentedData.X_test_count}
+                </li>
+                <li style={{ marginBottom: '7px' }}>
+                    <strong>y_train count:</strong> {segmentedData.y_train_count}
+                </li>
+                <li style={{ marginBottom: '7px' }}>
+                    <strong>y_test count:</strong> {segmentedData.y_test_count}
+                </li>
                 </div>
-            )}
+            </>
+        )
+    )
+)}
+
+
             <div className={`sidebar ${isSidebarOpen ? 'open' : ''}`}>
-              <Tooltip title="preprocess technique" arrow>
-                <div className="toggle-button" onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
-                    {isSidebarOpen ? <SwitchLeftIcon /> : <SwitchRightIcon />}
-                </div>
+                <Tooltip title="preprocess technique" arrow>
+                    <div className="toggle-button" onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
+                        {isSidebarOpen ? <SwitchLeftIcon /> : <SwitchRightIcon />}
+                    </div>
                 </Tooltip>
                 {isSidebarOpen && (
                     <div className="sidebar-content">
@@ -270,10 +361,10 @@ export default function Datapreprocessing() {
                             </li>
                             <li
                                 style={{ marginBottom: '30px', cursor: 'pointer' }}
-                                onClick={() => handleItemClick('Data Segmentation')}
+                                onClick={() => handleSegmentationClick()}
                             >
                                 Data Segmentation
-                                {activeItem === 'Data Segmentation' && renderDetails('Data Segmentation')}
+
                             </li>
                             <li
                                 style={{ marginBottom: '30px', cursor: 'pointer' }}
@@ -289,5 +380,3 @@ export default function Datapreprocessing() {
         </>
     );
 }
-
-

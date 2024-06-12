@@ -26,7 +26,7 @@
 .data-container {
   display: flex;
   justify-content: center;
-  margin-top: 70px;
+  margin-top: 80px;
   margin-left: 100px;
 }
 
@@ -35,7 +35,7 @@
   overflow: auto;
   width: 70%;
   position: relative;
-  left: 350px;
+  left: 320px;
 }
 
 
@@ -88,7 +88,7 @@
 
 #data-preproccess{
   position: absolute;
-  left: 350px;
+  left: 325px;
   top: 110px;
 }
 #mode-select{
@@ -118,4 +118,19 @@
   left: 0px; /* When open, move the sidebar to the left edge */
 }
 
+#train-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+ 
+  text-align: center;
+  position: relative;
+  top: 100px;
+  left: -10px;
+}
 
+#train-text li {
+  list-style: none;
+  margin-bottom: 7px;
+}

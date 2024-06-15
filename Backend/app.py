@@ -398,25 +398,27 @@
 #     app.run(debug=True)
 
 
+
+
 from flask import Flask, request, jsonify, render_template, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
+from werkzeug.utils import secure_filename
 import pandas as pd
-import docx
-import json
 import os
+import json
+import bcrypt
 import io
+import docx
 import numpy as np
 from sklearn.impute import SimpleImputer
 from sklearn.linear_model import LinearRegression
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.preprocessing import PowerTransformer, StandardScaler, MinMaxScaler
 from scipy.stats import boxcox
-import bcrypt
-from werkzeug.utils import secure_filename
+from io import StringIO
 from sklearn.model_selection import train_test_split
 
-# Initialize Flask app
 app = Flask(__name__)
 CORS(app)
 
@@ -455,7 +457,7 @@ def signup():
     role = data.get('role')  # Get role from request
 
     if not email or not password or not username or not role:
-        return jsonify({'error': 'Email, password, username and role are required'}), 400
+        return jsonify({'error': 'Email, password, username, and role are required'}), 400
 
     # Check if the user already exists
     existing_user = User.query.filter_by(email=email).first()
@@ -533,8 +535,9 @@ def get_username():
     if not user:
         return jsonify({'error': 'User not found'}), 404
 
-    return jsonify({'username': user.username,'role': user.role}), 200
+    return jsonify({'username': user.username, 'role': user.role}), 200
 
+# Data preprocessing class
 class preprocess:
     @staticmethod
     def poz_read_file(file_path_or_uploaded_file):
@@ -708,58 +711,73 @@ class preprocess:
             raise ValueError("Invalid action. Options: 'remove', 'transform', 'cap'")
 
         return cleaned_data
+    
+    
+    # @staticmethod
+    # def poz_data_aggregation(data, group_by_columns, aggregation_functions):
+    #     """
+    #     Aggregate data based on specified grouping columns and aggregation functions.
+
+    #     Parameters:
+    #     - data: DataFrame containing the dataset.
+    #     - group_by_columns: List of columns to group the data by.
+    #     - aggregation_functions: Dictionary where keys are column names and values are aggregation functions.
+
+    #     Returns:
+    #     - DataFrame with aggregated data.
+    #     """
+    #     try:
+    #         aggregated_data = data.groupby(group_by_columns).agg(aggregation_functions).reset_index()
+    #         return aggregated_data
+    #     except Exception as e:
+    #         print(f"An error occurred during data aggregation: {e}")
+    #         return None
     @staticmethod
-    def poz_split_data(data, target_column, test_size, random_state, axis):
+    def poz_data_aggregation(data, group_by_columns, aggregation_functions):
         """
-        Split data into train and test sets.
+        Aggregate data based on specified grouping columns and aggregation functions.
 
         Parameters:
         - data: DataFrame containing the dataset.
-        - target_column: Name of the target column.
-        - test_size: Size of the test set.
-        - random_state: Random state for reproducibility.
-        - axis: Axis along which to drop the target column (0 for rows, 1 for columns).
+        - group_by_columns: List of columns to group the data by.
+        - aggregation_functions: Dictionary where keys are column names and values are aggregation functions.
 
         Returns:
-        - X_train, X_test, y_train, y_test: Train and test sets for features and target.
+        - DataFrame with aggregated data.
         """
-        if axis not in [0, 1]:
-            raise ValueError("Axis must be 0 or 1.")
+        try:
+            # Convert any non-numeric columns to string to avoid aggregation issues
+            for col in data.columns:
+                if data[col].dtype == 'object':
+                    data[col] = data[col].astype(str)
 
-        X = data.drop(target_column, axis=axis)
-        y = data[target_column]
-        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=random_state)
-        return X_train, X_test, y_train, y_test
+            # Perform aggregation
+            aggregated_data = data.groupby(group_by_columns).agg(aggregation_functions).reset_index()
+            return aggregated_data
+        except Exception as e:
+            print(f"An error occurred during data aggregation: {e}")
+            return None
+    @staticmethod
+    def poz_split_data(data, target_column, test_size, random_state, axis):
+            """
+            Split data into train and test sets.
+            Parameters:
+            - data: DataFrame containing the dataset.
+            - target_column: Name of the target column.
+            - test_size: Size of the test set.
+            - random_state: Random state for reproducibility.
+            - axis: Axis along which to drop the target column (0 for rows, 1 for columns).
+            Returns:
+            - X_train, X_test, y_train, y_test: Train and test sets for features and target.
+            """
+            if axis not in [0, 1]:
+                raise ValueError("Axis must be 0 or 1.")
 
-@app.route('/')
-def index():
-    return render_template('index.html')
+            X = data.drop(target_column, axis=axis)
+            y = data[target_column]
+            X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=random_state)
+            return X_train, X_test, y_train, y_test
 
-@app.route('/upload', methods=['POST'])
-def upload_file():
-    if 'file' not in request.files:
-        return redirect(request.url)
-    file = request.files['file']
-    if file.filename == '':
-        return redirect(request.url)
-    if file:
-        filename = secure_filename(file.filename)
-        file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        file.save(file_path)
-
-        target_column = request.form['target_column']
-        test_size = float(request.form['test_size'])
-        random_state = int(request.form['random_state'])
-        axis = int(request.form['axis'])
-
-        data = pd.read_csv(file_path)
-        X_train, X_test, y_train, y_test = preprocess.poz_split_data(data, target_column, test_size, random_state, axis)
-
-        return render_template('result.html', 
-                               X_train=X_train.to_html(), 
-                               X_test=X_test.to_html(), 
-                               y_train=y_train.to_html(), 
-                               y_test=y_test.to_html())
 
 # Endpoint to handle missing values
 @app.route('/handle_missing_values', methods=['POST'])
@@ -822,8 +840,51 @@ def upload_csv():
             return jsonify({'data': json_data})
         except Exception as e:
             return jsonify({'error': str(e)}), 500
+        
 
-# Endpoint to handle outliers
+@app.route('/aggregate_data', methods=['POST'])
+def handle_aggregate_data():
+    try:
+        # Check if the POST request has the file part
+        if 'file' not in request.files:
+            return jsonify({'error': 'No file part'}), 400
+
+        file = request.files['file']
+        target_column = request.form.get('targetColumn', None)
+
+        # Load CSV data from file
+        if file.filename == '':
+            return jsonify({'error': 'No selected file'}), 400
+
+        if file and target_column:
+            # Read CSV data
+            csv_string = file.stream.read().decode('utf-8')
+            csv_data = StringIO(csv_string)
+
+            # Load CSV into DataFrame
+            df = pd.read_csv(csv_data)
+
+            # Ensure target_column is not included in aggregation columns
+            aggregation_columns = [col for col in df.columns if col != target_column and pd.api.types.is_numeric_dtype(df[col])]
+            aggregation_functions = {col: 'mean' for col in aggregation_columns}
+
+            # Perform data aggregation using the predefined function
+            aggregated_data = preprocess.poz_data_aggregation(df, [target_column], aggregation_functions)
+
+            if aggregated_data is not None:
+                # Convert aggregated data to JSON format
+                aggregated_data_json = aggregated_data.to_json(orient='records')
+                return jsonify({'aggregated_data': aggregated_data_json}), 200
+            else:
+                return jsonify({'error': 'Data aggregation failed'}), 500
+
+        return jsonify({'error': 'Missing target column'}), 400
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+        
+        # Endpoint to handle outliers
 @app.route('/handle_outliers', methods=['POST'])
 def handle_outliers():
     try:
@@ -844,7 +905,8 @@ def handle_outliers():
     except Exception as e:
         print(f"Error processing outliers: {e}")
         return jsonify({'error': f"Error processing outliers: {e}"}), 500
-    # Endpoint to handle data segmentation
+    
+        # Endpoint to handle data segmentation
 @app.route('/segment_data', methods=['POST'])
 def segment_data():
     try:
@@ -853,16 +915,16 @@ def segment_data():
             return jsonify({'error': 'No file uploaded'}), 400
 
         file = request.files['file']
-        
+
         # Read the CSV file
         segmented_data = preprocess.poz_read_file(file)
-        
+
         # Get the last column name as the target column
         target_column = segmented_data.columns[-1]
-        
+
         # Split the data
         X_train, X_test, y_train, y_test = preprocess.poz_split_data(segmented_data, target_column=target_column, test_size=0.2, random_state=42, axis=1)
-        
+
         # Convert split data to JSON
         split_data_json = {
             'X_train': X_train.to_json(orient='split'),
@@ -874,16 +936,17 @@ def segment_data():
             'y_train_count': len(y_train),
             'y_test_count': len(y_test)
         }
-        
+
         return jsonify({'split_data': split_data_json}), 200
-        
     except Exception as e:
         print(f"Error segmenting the data: {e}")
         return jsonify({'error': f"Error segmenting the data: {e}"}), 500
 
-
-
 if __name__ == '__main__':
     app.run(debug=True)
+
+
+
+
 
 

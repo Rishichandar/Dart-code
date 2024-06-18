@@ -10,7 +10,8 @@ import axios from 'axios';
 import Button from '@mui/material/Button';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useNavigate } from 'react-router-dom';
-
+import CheckIcon from '@mui/icons-material/Check';
+import CloseIcon from '@mui/icons-material/Close';
 
 export default function Datapreprocessing() {
     const { csvData } = useContext(CsvContext);
@@ -405,15 +406,15 @@ export default function Datapreprocessing() {
                             </li>
                             {isSelectingTargetColumn ? (
                                 <div>
-                                    <label htmlFor="targetColumn">Select Target Column:</label>
-                                    <select id="targetColumn" name="targetColumn" value={targetColumn} onChange={handleTargetColumnChange}>
-                                        <option value="">Select Column</option>
+                                    <label htmlFor="targetColumn">Select Column:</label>
+                                    <select id="targetColumn" style={{marginLeft:'33px'}} name="targetColumn" value={targetColumn} onChange={handleTargetColumnChange}>
+                                        <option value="" >Select Column</option>
                                         {persistedData && persistedData.columns.map((column, index) => (
                                             <option key={index} value={column}>{column}</option>
                                         ))}
                                     </select>
-                                    <Button variant="contained" onClick={handleConfirmTargetColumn}>Confirm</Button>
-                                    <Button variant="contained" onClick={handleCancelTargetColumnSelection}>Cancel</Button>
+                                    <span  onClick={handleConfirmTargetColumn}><CheckIcon style={{fontSize:'larger',position:'relative',top:'5px',left:'10px'}}/></span>
+                                    <span onClick={handleCancelTargetColumnSelection}><CloseIcon style={{fontSize:'larger',position:'relative',top:'5px',left:'15px'}}/></span>
                                 </div>
                             ) : (
                                 <li

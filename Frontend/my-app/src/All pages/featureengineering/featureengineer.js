@@ -89,6 +89,78 @@ export default function Featureengineer() {
             alert('Error processing the data');
         }
     };
+    // const handleFeatureExtractionClick = async (method, text) => {
+    //     try {
+    //         if (!persistedData || !persistedData.data || !persistedData.columns) {
+    //             console.error('No file found in persistedData');
+    //             alert('No file found in persistedData');
+    //             return;
+    //         }
+
+    //         // Prepare CSV content from persistedData
+    //         const headers = persistedData.columns.join(',');
+    //         const rows = persistedData.data.map(row => row.join(',')).join('\n');
+    //         const csvContent = `${headers}\n${rows}`;
+
+    //         // Create a Blob from CSV content
+    //         const csvData = new Blob([csvContent], { type: 'text/csv' });
+
+    //         // Create FormData and append CSV file and scaling method
+    //         const formData = new FormData();
+    //         formData.append('file', csvData, 'data.csv');
+    //         formData.append('scaling_method', method);
+
+    //         // Send POST request to backend
+    //         const response = await axios.post('http://127.0.0.1:5000/scale', formData, {
+    //             headers: {
+    //                 'Content-Type': 'multipart/form-data' // Use multipart/form-data for file uploads
+    //             }
+    //         });
+
+    //         // Process response from backend
+    //         // setProcessedData(response.data);
+    //         setProcessedData(response.data.scaled_data);
+    //         setSelectedTechnique(text);
+    //     } catch (error) {
+    //         console.error('Error processing the data:', error);
+    //         alert('Error processing the data');
+    //     }
+    // };
+
+    const handleFeatureExtractionClick = async (method, text) => {
+        try {
+            if (!persistedData || !persistedData.data || !persistedData.columns) {
+                console.error('No file found in persistedData');
+                alert('No file found in persistedData');
+                return;
+            }
+
+            const headers = persistedData.columns.join(',');
+            const rows = persistedData.data.map(row => row.join(',')).join('\n');
+            const csvContent = `${headers}\n${rows}`;
+            const csvData = new Blob([csvContent], { type: 'text/csv' });
+            const formData = new FormData();
+            formData.append('file', csvData, 'data.csv');
+            formData.append('method', method);
+            formData.append('n_components', 2); // Add other parameters as needed
+            formData.append('k', 5);
+
+            const response = await axios.post('http://127.0.0.1:5000/feature-extraction', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+
+            setProcessedData(response.data);
+            setSelectedTechnique(text);
+        } catch (error) {
+            console.error('Error processing the data:', error);
+            alert('Error processing the data');
+        }
+    };
+
+
+
 
     ///render details
     const renderDetails = (item) => {
@@ -103,10 +175,10 @@ export default function Featureengineer() {
                         <li style={{ marginBottom: '7px' }} className="icon-with-text" onClick={() => handleFeatureScalingClick('normalization', 'Normalization')} >
                             <ArrowRightIcon /> Normalization
                         </li>
-                        <li style={{ marginBottom: '7px' }} className="icon-with-text"  onClick={() => handleFeatureScalingClick('cliplog', 'Cliplog')}>
+                        <li style={{ marginBottom: '7px' }} className="icon-with-text" onClick={() => handleFeatureScalingClick('cliplog', 'Cliplog')}>
                             <ArrowRightIcon /> Clip-log
                         </li>
-                        <li style={{ marginBottom: '7px' }} className="icon-with-text"  onClick={() => handleFeatureScalingClick('z-score', 'Z-score')}>
+                        <li style={{ marginBottom: '7px' }} className="icon-with-text" onClick={() => handleFeatureScalingClick('z-score', 'Z-score')}>
                             <ArrowRightIcon /> z-score
                         </li>
 
@@ -116,16 +188,16 @@ export default function Featureengineer() {
                 return (
 
                     <ul style={{ listStyleType: 'none', padding: '10px', textAlign: 'left' }}>
-                        <li style={{ marginBottom: '7px' }} className="icon-with-text">
+                        <li style={{ marginBottom: '7px' }} className="icon-with-text" onClick={() => handleFeatureExtractionClick('pCA', 'PCA')}>
                             <ArrowRightIcon /> PCA
                         </li>
-                        <li style={{ marginBottom: '7px' }} className="icon-with-text">
+                        <li style={{ marginBottom: '7px' }} className="icon-with-text" onClick={() => handleFeatureExtractionClick('polynomial', 'Polynomial')}>
                             <ArrowRightIcon /> Polynomial
                         </li>
-                        <li style={{ marginBottom: '7px' }} className="icon-with-text">
+                        <li style={{ marginBottom: '7px' }} className="icon-with-text" onClick={() => handleFeatureExtractionClick('expansion', 'Expansion')}>
                             <ArrowRightIcon /> Expansion
                         </li>
-                        <li style={{ marginBottom: '7px' }} className="icon-with-text">
+                        <li style={{ marginBottom: '7px' }} className="icon-with-text" onClick={() => handleFeatureExtractionClick('select k-best', 'select k-best')}>
                             <ArrowRightIcon /> select k-best
                         </li>
                     </ul>

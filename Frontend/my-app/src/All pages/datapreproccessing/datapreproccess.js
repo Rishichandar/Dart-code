@@ -233,7 +233,8 @@ export default function Datapreprocessing() {
                 }
             });
 
-            setAggregateData(response.data.aggregated_data);
+            setProcessedData(response.data.aggregated_data);
+            setSelectedTechnique('Data Aggregation');
             setIsSelectingTargetColumn(false); // Reset state after successful aggregation
         } catch (error) {
             console.error('Error processing the data:', error);

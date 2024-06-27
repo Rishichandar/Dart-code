@@ -84,7 +84,7 @@ export default function Sidebar() {
             transition: 'width 0.3s ease, margin 0.3s ease',
             width: open ? (mode === 'full' ? 170 : 60) : 0,
             overflowX: 'hidden',
-             background:'#538392',
+             background:'#50808e',
              color:'white'  
           },
         }}

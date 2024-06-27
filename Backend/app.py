@@ -17,6 +17,11 @@
 # from scipy.stats import boxcox
 # from io import StringIO
 # from sklearn.model_selection import train_test_split
+# from sklearn.decomposition import PCA
+# from sklearn.preprocessing import MinMaxScaler, PolynomialFeatures
+# from sklearn.feature_selection import SelectKBest, f_classif
+# from sklearn.decomposition import PCA
+# from sklearn.impute import SimpleImputer
 
 # app = Flask(__name__)
 # CORS(app)
@@ -378,7 +383,66 @@
 #         df_scaled = pd.DataFrame()  # Return an empty DataFrame in case of error
     
 #      return df_scaled
-  
+     
+#     @staticmethod
+#     def feature_extraction(X, feature_names, y=None, method='pCA', n_components=2, k=5):
+#         # Impute missing values
+#         imputer = SimpleImputer(strategy='mean')
+#         X = imputer.fit_transform(X)
+        
+#         if method == 'pCA':
+#             pca = PCA(n_components=n_components)
+#             X_transformed = pca.fit_transform(X)
+#             columns = [f"PC{i + 1}" for i in range(n_components)]
+#         elif method == 'scaling':
+#             scaler = MinMaxScaler()
+#             X_transformed = scaler.fit_transform(X)
+#             columns = feature_names
+#         elif method == 'polynomial':
+#             poly = PolynomialFeatures(degree=2, include_bias=False)
+#             X_transformed = poly.fit_transform(X)
+#             poly_feature_names = poly.get_feature_names_out(input_features=feature_names)
+#             columns = [name.replace(" ", "*") for name in poly_feature_names]
+#         elif method == 'select k-best':
+#             selector = SelectKBest(score_func=f_classif, k=k)
+#             X_transformed = selector.fit_transform(X, y)
+#             selected_indices = selector.get_support(indices=True)
+#             columns = [feature_names[i] for i in selected_indices]
+#         elif method == 'expansion':
+#             poly = PolynomialFeatures(degree=3, include_bias=False)
+#             X_transformed = poly.fit_transform(X)
+#             poly_feature_names = poly.get_feature_names_out(input_features=feature_names)
+#             columns = [name.replace(" ", "*") for name in poly_feature_names]
+#         else:
+#             raise ValueError(
+#                 "Invalid method. Choose one of: 'pCA', 'scaling', 'polynomial', 'select k-best', 'expansion'")
+#         return pd.DataFrame(X_transformed, columns=columns)
+    
+# @app.route('/feature-extraction', methods=['POST'])
+# def extract_features():
+#     if 'file' not in request.files:
+#         return jsonify({'error': 'No file part in the request'}), 400
+#     file = request.files['file']
+#     if file.filename == '':
+#         return jsonify({'error': 'No selected file'}), 400
+
+#     method = request.form.get('method', 'pCA')
+#     n_components = int(request.form.get('n_components', 2))
+#     k = int(request.form.get('k', 5))
+
+#     df = pd.read_csv(file)
+#     X = df.iloc[:, :-1].values  # Assuming the last column is the target
+#     feature_names = df.columns[:-1].tolist()
+#     y = df.iloc[:, -1].values if method == 'select k-best' else None
+
+#     try:
+#         result = preprocess.feature_extraction(X, feature_names, y, method, n_components, k)
+#         return result.to_json(orient='split')
+#     except ValueError as e:
+#         return jsonify({'error': str(e)}), 400
+
+
+ 
 # # Endpoint to handle missing values
 # @app.route('/handle_missing_values', methods=['POST'])
 # def handle_missing_values():
@@ -582,7 +646,6 @@
 
 
 
-
 from flask import Flask, request, jsonify, render_template, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
@@ -606,6 +669,10 @@ from sklearn.preprocessing import MinMaxScaler, PolynomialFeatures
 from sklearn.feature_selection import SelectKBest, f_classif
 from sklearn.decomposition import PCA
 from sklearn.impute import SimpleImputer
+import base64
+from sklearn.ensemble import RandomForestClassifier
+import xgboost as xgb
+import matplotlib.pyplot as plt
 
 app = Flask(__name__)
 CORS(app)
@@ -1003,6 +1070,92 @@ class preprocess:
         return pd.DataFrame(X_transformed, columns=columns)
     
     
+    @staticmethod
+    def plot_feature_importances(X, y, feature_names, algorithm='Random Forest', n_estimators_rf=100, n_estimators_xgb=100, random_state=42):
+        if algorithm == 'Random Forest':
+            clf = RandomForestClassifier(n_estimators=n_estimators_rf, random_state=random_state)
+        elif algorithm == 'XGBoost':
+            clf = xgb.XGBClassifier(n_estimators=n_estimators_xgb, random_state=random_state)
+        else:
+            return "Invalid algorithm selected.", None
+
+        clf.fit(X, y)
+        importances = clf.feature_importances_
+        indices = np.argsort(importances)[::-1]
+
+        feature_ranking = []
+        for f in range(X.shape[1]):
+            feature_ranking.append((f + 1, feature_names[indices[f]], importances[indices[f]]))
+
+        plt.figure(figsize=(10, 6))
+        plt.title("Feature importances")
+        plt.bar(range(X.shape[1]), importances[indices], align="center")
+        plt.xticks(range(X.shape[1]), [feature_names[i] for i in indices], rotation=90)
+        plt.xlabel("Feature")
+        plt.ylabel("Feature importance")
+
+        img = io.BytesIO()
+        plt.savefig(img, format='png')
+        img.seek(0)
+        plot_url = base64.b64encode(img.getvalue()).decode('utf8')
+        plt.close()
+
+        return feature_ranking, plot_url
+    
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+@app.route('/upload', methods=['POST'])
+def upload():
+    if 'file' not in request.files:
+        return 'No file part'
+    file = request.files['file']
+    if file.filename == '':
+        return 'No selected file'
+    df = pd.read_csv(file)
+    feature_names = df.columns[:-1]
+    target_column = df.columns[-1]
+
+    X = df[feature_names].values
+    y = df[target_column].values
+
+    algorithm = request.form.get('algorithm', 'Random Forest')
+    n_estimators_rf = int(request.form.get('n_estimators_rf', 100))
+    n_estimators_xgb = int(request.form.get('n_estimators_xgb', 100))
+
+    feature_ranking, plot_url = preprocess.plot_feature_importances(X, y, feature_names, algorithm, n_estimators_rf, n_estimators_xgb)
+
+    return render_template('result.html', feature_ranking=feature_ranking, plot_url=plot_url)
+
+@app.route('/feature-importance', methods=['POST'])
+def feature_importance():
+    if 'file' not in request.files:
+        return jsonify({"error": "No file part"})
+    file = request.files['file']
+    if file.filename == '':
+        return jsonify({"error": "No selected file"})
+
+    df = pd.read_csv(file)
+    target_column = request.form.get('targetColumn')
+    algorithm = request.form.get('algorithm', 'Random Forest')
+    n_estimators_rf = int(request.form.get('n_estimators_rf', 100))
+    n_estimators_xgb = int(request.form.get('n_estimators_xgb', 100))
+
+    # Ensure there are no NaN values in the target column
+    df = df.dropna(subset=[target_column])
+
+    # Convert the target column to integers if necessary
+    df[target_column] = df[target_column].astype(int)
+
+    feature_names = df.columns[df.columns != target_column]
+    X = df[feature_names].values
+    y = df[target_column].values
+
+    feature_ranking, plot_url = preprocess.plot_feature_importances(X, y, feature_names, algorithm, n_estimators_rf, n_estimators_xgb)
+
+    return jsonify({"feature_ranking": feature_ranking, "plot_url": plot_url})
+
 @app.route('/feature-extraction', methods=['POST'])
 def extract_features():
     if 'file' not in request.files:
@@ -1025,6 +1178,7 @@ def extract_features():
         return result.to_json(orient='split')
     except ValueError as e:
         return jsonify({'error': str(e)}), 400
+
 
  
 # Endpoint to handle missing values
@@ -1226,6 +1380,13 @@ def scale():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+
+
+
+
+
+
 
 
 

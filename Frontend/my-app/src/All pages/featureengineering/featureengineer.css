@@ -66,7 +66,7 @@
   }
   
   .sidebar-content2  {
-    margin-top: 100px;
+    margin-top: 200px;
     display: flex;
     text-align: center;
     cursor: pointer;
@@ -100,9 +100,9 @@
     position: fixed;
     top: 0;
     left: -270px; /* Adjust this value to control how far from the left the sidebar starts */
-    width: 270px; /* Adjust the width as needed */
+    width: 230px; /* Adjust the width as needed */
     height: 100%;
-    background-color: #333; /* Example background color */
+    background-color: #2f4550; /* Example background color */
     transition: left 0.3s ease; /* Add transition for smooth animation */
     top: 0;
     color: white;
@@ -119,4 +119,18 @@
   }
   
   
-  
+  #featuretable{
+    float: right;
+    position: relative;
+    bottom: 340px;
+    right: 20px;
+    list-style-type: none;
+    height: 0px;
+  }
+  #FeatureRanking{
+    font-size: 15px;
+    font-weight: 600;
+    margin-left: 45px;
+
+
+  }

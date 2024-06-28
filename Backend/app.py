@@ -1,4 +1,7 @@
 
+
+
+
 # from flask import Flask, request, jsonify, render_template, redirect, url_for
 # from flask_sqlalchemy import SQLAlchemy
 # from flask_cors import CORS
@@ -22,6 +25,10 @@
 # from sklearn.feature_selection import SelectKBest, f_classif
 # from sklearn.decomposition import PCA
 # from sklearn.impute import SimpleImputer
+# import base64
+# from sklearn.ensemble import RandomForestClassifier
+# import xgboost as xgb
+# import matplotlib.pyplot as plt
 
 # app = Flask(__name__)
 # CORS(app)
@@ -418,6 +425,93 @@
 #                 "Invalid method. Choose one of: 'pCA', 'scaling', 'polynomial', 'select k-best', 'expansion'")
 #         return pd.DataFrame(X_transformed, columns=columns)
     
+    
+#     @staticmethod
+#     def plot_feature_importances(X, y, feature_names, algorithm='Random Forest', n_estimators_rf=100, n_estimators_xgb=100, random_state=42):
+#         if algorithm == 'Random Forest':
+#             clf = RandomForestClassifier(n_estimators=n_estimators_rf, random_state=random_state)
+#         elif algorithm == 'XGBoost':
+#             clf = xgb.XGBClassifier(n_estimators=n_estimators_xgb, random_state=random_state)
+#         else:
+#             return "Invalid algorithm selected.", None
+
+#         clf.fit(X, y)
+#         importances = clf.feature_importances_
+#         indices = np.argsort(importances)[::-1]
+
+#         feature_ranking = []
+#         for f in range(X.shape[1]):
+#             feature_ranking.append((f + 1, feature_names[indices[f]], importances[indices[f]]))
+
+#         plt.figure(figsize=(10, 6))
+#         plt.title("Feature importances")
+#         plt.bar(range(X.shape[1]), importances[indices], align="center")
+#         plt.xticks(range(X.shape[1]), [feature_names[i] for i in indices], rotation=90)
+#         plt.xlabel("Feature")
+#         plt.ylabel("Feature importance")
+
+#         img = io.BytesIO()
+#         plt.savefig(img, format='png')
+#         img.seek(0)
+#         plot_url = base64.b64encode(img.getvalue()).decode('utf8')
+#         plt.close()
+
+#         return feature_ranking, plot_url
+    
+# @app.route('/')
+# def index():
+#     return render_template('index.html')
+
+# @app.route('/upload', methods=['POST'])
+# def upload():
+#     if 'file' not in request.files:
+#         return 'No file part'
+#     file = request.files['file']
+#     if file.filename == '':
+#         return 'No selected file'
+#     df = pd.read_csv(file)
+#     feature_names = df.columns[:-1]
+#     target_column = df.columns[-1]
+
+#     X = df[feature_names].values
+#     y = df[target_column].values
+
+#     algorithm = request.form.get('algorithm', 'Random Forest')
+#     n_estimators_rf = int(request.form.get('n_estimators_rf', 100))
+#     n_estimators_xgb = int(request.form.get('n_estimators_xgb', 100))
+
+#     feature_ranking, plot_url = preprocess.plot_feature_importances(X, y, feature_names, algorithm, n_estimators_rf, n_estimators_xgb)
+
+#     return render_template('result.html', feature_ranking=feature_ranking, plot_url=plot_url)
+
+# @app.route('/feature-importance', methods=['POST'])
+# def feature_importance():
+#     if 'file' not in request.files:
+#         return jsonify({"error": "No file part"})
+#     file = request.files['file']
+#     if file.filename == '':
+#         return jsonify({"error": "No selected file"})
+
+#     df = pd.read_csv(file)
+#     target_column = request.form.get('targetColumn')
+#     algorithm = request.form.get('algorithm', 'Random Forest')
+#     n_estimators_rf = int(request.form.get('n_estimators_rf', 100))
+#     n_estimators_xgb = int(request.form.get('n_estimators_xgb', 100))
+
+#     # Ensure there are no NaN values in the target column
+#     df = df.dropna(subset=[target_column])
+
+#     # Convert the target column to integers if necessary
+#     df[target_column] = df[target_column].astype(int)
+
+#     feature_names = df.columns[df.columns != target_column]
+#     X = df[feature_names].values
+#     y = df[target_column].values
+
+#     feature_ranking, plot_url = preprocess.plot_feature_importances(X, y, feature_names, algorithm, n_estimators_rf, n_estimators_xgb)
+
+#     return jsonify({"feature_ranking": feature_ranking, "plot_url": plot_url})
+
 # @app.route('/feature-extraction', methods=['POST'])
 # def extract_features():
 #     if 'file' not in request.files:
@@ -646,6 +740,9 @@
 
 
 
+
+
+
 from flask import Flask, request, jsonify, render_template, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
@@ -676,6 +773,7 @@ import matplotlib.pyplot as plt
 
 app = Flask(__name__)
 CORS(app)
+cors = CORS(app, resources={r"/feature-importance": {"origins": "http://localhost:3000"}})
 
 # Database configuration
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:rishi123@localhost:3306/dart'
@@ -1069,13 +1167,12 @@ class preprocess:
                 "Invalid method. Choose one of: 'pCA', 'scaling', 'polynomial', 'select k-best', 'expansion'")
         return pd.DataFrame(X_transformed, columns=columns)
     
-    
     @staticmethod
     def plot_feature_importances(X, y, feature_names, algorithm='Random Forest', n_estimators_rf=100, n_estimators_xgb=100, random_state=42):
         if algorithm == 'Random Forest':
             clf = RandomForestClassifier(n_estimators=n_estimators_rf, random_state=random_state)
         elif algorithm == 'XGBoost':
-            clf = xgb.XGBClassifier(n_estimators=n_estimators_xgb, random_state=random_state)
+            clf = xgb.XGBClassifier(n_estimators=n_estimators_xgb, random_state=random_state, use_label_encoder=False)
         else:
             return "Invalid algorithm selected.", None
 
@@ -1083,17 +1180,16 @@ class preprocess:
         importances = clf.feature_importances_
         indices = np.argsort(importances)[::-1]
 
-        feature_ranking = []
-        for f in range(X.shape[1]):
-            feature_ranking.append((f + 1, feature_names[indices[f]], importances[indices[f]]))
+        feature_ranking = [(f + 1, feature_names[indices[f]], float(importances[indices[f]])) for f in range(X.shape[1])]  # Convert float32 to float
 
         plt.figure(figsize=(10, 6))
-        plt.title("Feature importances")
+        plt.title("Feature Importances")
         plt.bar(range(X.shape[1]), importances[indices], align="center")
         plt.xticks(range(X.shape[1]), [feature_names[i] for i in indices], rotation=90)
         plt.xlabel("Feature")
-        plt.ylabel("Feature importance")
+        plt.ylabel("Feature Importance")
 
+        # Save plot to a BytesIO object and encode it to base64
         img = io.BytesIO()
         plt.savefig(img, format='png')
         img.seek(0)
@@ -1101,6 +1197,8 @@ class preprocess:
         plt.close()
 
         return feature_ranking, plot_url
+
+        
     
 @app.route('/')
 def index():
@@ -1154,7 +1252,11 @@ def feature_importance():
 
     feature_ranking, plot_url = preprocess.plot_feature_importances(X, y, feature_names, algorithm, n_estimators_rf, n_estimators_xgb)
 
-    return jsonify({"feature_ranking": feature_ranking, "plot_url": plot_url})
+    # Prepare response
+    feature_ranking_json = [{"rank": rank, "feature_name": feature_name, "importance": float(importance)} for rank, feature_name, importance in feature_ranking]
+
+    return jsonify({"feature_ranking": feature_ranking_json, "plot_url": plot_url})
+
 
 @app.route('/feature-extraction', methods=['POST'])
 def extract_features():
@@ -1380,8 +1482,6 @@ def scale():
 
 if __name__ == '__main__':
     app.run(debug=True)
-
-
 
 
 

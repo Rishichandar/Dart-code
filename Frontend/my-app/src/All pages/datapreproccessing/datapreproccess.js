@@ -12,6 +12,8 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useNavigate } from 'react-router-dom';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
+import { toast } from "react-toastify";
+
 
 export default function Datapreprocessing() {
     const { csvData } = useContext(CsvContext);
@@ -83,6 +85,7 @@ export default function Datapreprocessing() {
 
             setProcessedData(response.data.transformed_data);
             setSelectedTechnique(text);
+            toast.success("proccess applied");
         } catch (error) {
             console.error('Error processing the data:', error);
             alert('Error processing the data');
@@ -114,6 +117,7 @@ export default function Datapreprocessing() {
 
             setProcessedData(response.data.processed_data);
             setSelectedTechnique(text);
+            toast.success("proccess applied");
         } catch (error) {
             console.error('Error processing the data:', error);
             alert('Error processing the data');
@@ -147,6 +151,7 @@ export default function Datapreprocessing() {
 
             setProcessedData(response.data.processed_data);
             setSelectedTechnique(text);
+            toast.success("proccess applied");
         } catch (error) {
             console.error('Error processing outliers:', error);
             alert('Error processing outliers');
@@ -197,6 +202,7 @@ export default function Datapreprocessing() {
                 y_train_count,
                 y_test_count
             });
+            toast.success("proccess applied");
 
             setSelectedTechnique('Data Segmentation');
         } catch (error) {
@@ -236,6 +242,7 @@ export default function Datapreprocessing() {
             setProcessedData(response.data.aggregated_data);
             setSelectedTechnique('Data Aggregation');
             setIsSelectingTargetColumn(false); // Reset state after successful aggregation
+            toast.success("proccess applied");
         } catch (error) {
             console.error('Error processing the data:', error);
             alert('Error processing the data');

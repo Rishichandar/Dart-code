@@ -1,7 +1,5 @@
 
 
-
-
 # from flask import Flask, request, jsonify, render_template, redirect, url_for
 # from flask_sqlalchemy import SQLAlchemy
 # from flask_cors import CORS
@@ -32,6 +30,7 @@
 
 # app = Flask(__name__)
 # CORS(app)
+# cors = CORS(app, resources={r"/feature-importance": {"origins": "http://localhost:3000"}})
 
 # # Database configuration
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:rishi123@localhost:3306/dart'
@@ -425,13 +424,12 @@
 #                 "Invalid method. Choose one of: 'pCA', 'scaling', 'polynomial', 'select k-best', 'expansion'")
 #         return pd.DataFrame(X_transformed, columns=columns)
     
-    
 #     @staticmethod
 #     def plot_feature_importances(X, y, feature_names, algorithm='Random Forest', n_estimators_rf=100, n_estimators_xgb=100, random_state=42):
 #         if algorithm == 'Random Forest':
 #             clf = RandomForestClassifier(n_estimators=n_estimators_rf, random_state=random_state)
 #         elif algorithm == 'XGBoost':
-#             clf = xgb.XGBClassifier(n_estimators=n_estimators_xgb, random_state=random_state)
+#             clf = xgb.XGBClassifier(n_estimators=n_estimators_xgb, random_state=random_state, use_label_encoder=False)
 #         else:
 #             return "Invalid algorithm selected.", None
 
@@ -439,17 +437,16 @@
 #         importances = clf.feature_importances_
 #         indices = np.argsort(importances)[::-1]
 
-#         feature_ranking = []
-#         for f in range(X.shape[1]):
-#             feature_ranking.append((f + 1, feature_names[indices[f]], importances[indices[f]]))
+#         feature_ranking = [(f + 1, feature_names[indices[f]], float(importances[indices[f]])) for f in range(X.shape[1])]  # Convert float32 to float
 
 #         plt.figure(figsize=(10, 6))
-#         plt.title("Feature importances")
+#         plt.title("Feature Importances")
 #         plt.bar(range(X.shape[1]), importances[indices], align="center")
 #         plt.xticks(range(X.shape[1]), [feature_names[i] for i in indices], rotation=90)
 #         plt.xlabel("Feature")
-#         plt.ylabel("Feature importance")
+#         plt.ylabel("Feature Importance")
 
+#         # Save plot to a BytesIO object and encode it to base64
 #         img = io.BytesIO()
 #         plt.savefig(img, format='png')
 #         img.seek(0)
@@ -457,6 +454,8 @@
 #         plt.close()
 
 #         return feature_ranking, plot_url
+
+        
     
 # @app.route('/')
 # def index():
@@ -510,7 +509,11 @@
 
 #     feature_ranking, plot_url = preprocess.plot_feature_importances(X, y, feature_names, algorithm, n_estimators_rf, n_estimators_xgb)
 
-#     return jsonify({"feature_ranking": feature_ranking, "plot_url": plot_url})
+#     # Prepare response
+#     feature_ranking_json = [{"rank": rank, "feature_name": feature_name, "importance": float(importance)} for rank, feature_name, importance in feature_ranking]
+
+#     return jsonify({"feature_ranking": feature_ranking_json, "plot_url": plot_url})
+
 
 # @app.route('/feature-extraction', methods=['POST'])
 # def extract_features():
@@ -740,9 +743,6 @@
 
 
 
-
-
-
 from flask import Flask, request, jsonify, render_template, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
@@ -770,8 +770,13 @@ import base64
 from sklearn.ensemble import RandomForestClassifier
 import xgboost as xgb
 import matplotlib.pyplot as plt
+from collections import Counter
+from imblearn.under_sampling import RandomUnderSampler
+from imblearn.over_sampling import RandomOverSampler, SMOTE, ADASYN, BorderlineSMOTE
+from imblearn.combine import SMOTEENN
 
-app = Flask(__name__)
+
+app = Flask(__name__,template_folder='templates')
 CORS(app)
 cors = CORS(app, resources={r"/feature-importance": {"origins": "http://localhost:3000"}})
 
@@ -1197,9 +1202,156 @@ class preprocess:
         plt.close()
 
         return feature_ranking, plot_url
-
-        
     
+    
+    # Functions for Random Sampling
+    @staticmethod
+    def balance_dataset(X, y, method='under', sampling_strategy='auto', random_state=None):
+        if method == 'under':
+            sampler = RandomUnderSampler(sampling_strategy=sampling_strategy, random_state=random_state)
+        elif method == 'over':
+            sampler = RandomOverSampler(sampling_strategy=sampling_strategy, random_state=random_state)
+        elif method == 'SMOTE':
+            smote = SMOTE()
+            X_res, y_res = smote.fit_resample(X, y)
+            return X_res, y_res
+        elif method == 'ADASYN':
+            adasyn = ADASYN()
+            X_res, y_res = adasyn.fit_resample(X, y)
+            return X_res, y_res
+        elif method == 'Borderline-SMOTE':
+            borderline_smote = BorderlineSMOTE()
+            X_res, y_res = borderline_smote.fit_resample(X, y)
+            return X_res, y_res
+        else:
+            raise ValueError("method should be 'under', 'over', 'SMOTE', 'ADASYN', or 'Borderline-SMOTE'")
+
+        X_res, y_res = sampler.fit_resample(X, y)
+        return X_res, y_res
+    
+    # Plotting functions
+    @staticmethod
+    def plot_class_distribution(y, title):
+        plt.figure(figsize=(8, 6))
+        y.value_counts().plot(kind='bar')
+        plt.title(title)
+        plt.xlabel('Classes')
+        plt.ylabel('Frequency')
+        plt.tight_layout()
+
+        # Save plot to a bytes buffer
+        buf = io.BytesIO()
+        plt.savefig(buf, format='png')
+        
+        buf.seek(0)
+         
+          # Save plot to a BytesIO object and encode it to base64
+        # img = io.BytesIO()
+        # plt.savefig(img, format='png')
+        # img.seek(0)
+        # plot_url = base64.b64encode(img.getvalue()).decode('utf8')
+        # plt.close()
+
+        # Encode the buffer to base64
+        img_base64 = base64.b64encode(buf.getvalue()).decode('utf-8')
+        plt.close()
+        return img_base64
+
+# @app.route('/balance', methods=['POST'])
+# def balance():
+#     file = request.files['file']
+#     method = request.form['method']
+#     df = pd.read_csv(file)
+#     X = df.iloc[:, :-1]
+#     y = df.iloc[:, -1]
+#     X_res, y_res = preprocess.balance_dataset(X, y, method=method)
+#     class_distribution_image = preprocess.plot_class_distribution(y_res, f'Class Distribution after {method}')
+#     return render_template('result.html', image=class_distribution_image)
+
+@app.route('/balance', methods=['POST'])
+def balance():
+    try:
+        file = request.files['file']
+        method = request.form['method']
+
+        # Read CSV file into pandas DataFrame
+        df = pd.read_csv(file)
+
+        # Separate features (X) and target (y)
+        X = df.iloc[:, :-1]
+        y = df.iloc[:, -1]
+
+        # Balance dataset based on selected method
+        X_resampled, y_resampled = preprocess.balance_dataset(X, y, method=method)
+
+        # Prepare balanced data for response
+        balanced_data = {
+            'columns': X_resampled.columns.tolist(),
+            'data': X_resampled.values.tolist()
+        }
+        print("Balanced Data:", balanced_data)
+
+        # Plot class distribution and get image URL
+        image_url = preprocess.plot_class_distribution(y_resampled, f'Class Distribution after {method}')
+        print("Image URL:", image_url)
+
+        # Return JSON response with balanced data and image URL
+        # response = jsonify({'balanced_data': balanced_data, 'image_url': image_url})
+        response = jsonify({'balanced_data': balanced_data})
+        print("Response JSON:", response.get_json())
+        return response
+
+    except KeyError as e:
+        return jsonify({'error': f'Missing key in request: {str(e)}'}), 400
+
+    except ValueError as e:
+        return jsonify({'error': str(e)}), 400
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+# @app.route('/balance', methods=['POST'])
+# def balance():
+#     try:
+#         file = request.files['file']
+#         method = request.form['method']
+
+#         # Read CSV file into pandas DataFrame
+#         df = pd.read_csv(file)
+
+#         # Separate features (X) and target (y)
+#         X = df.iloc[:, :-1]
+#         y = df.iloc[:, -1]
+
+#         # Balance dataset based on selected method
+#         X_resampled, y_resampled = preprocess.balance_dataset(X, y, method=method)
+
+#         # Prepare balanced data for response
+#         balanced_data = {
+#             'columns': X_resampled.columns.tolist() + ['target'],
+#             'data': [list(row) + [y_resampled[i]] for i, row in enumerate(X_resampled.values)]
+#         }
+#         print("Balanced Data:", balanced_data)
+
+#         # Plot class distribution and get image URL
+#         image_url = preprocess.plot_class_distribution(y_resampled, f'Class Distribution after {method}')
+#         print("Image URL:", image_url)
+
+#         # Return JSON response with balanced data and image URL
+#         response = jsonify({'balanced_data': balanced_data, 'image_url': image_url})
+#         print("Response JSON:", response.get_json())
+#         return response
+
+#     except KeyError as e:
+#         return jsonify({'error': f'Missing key in request: {str(e)}'}), 400
+
+#     except ValueError as e:
+#         return jsonify({'error': str(e)}), 400
+
+#     except Exception as e:
+#         return jsonify({'error': str(e)}), 500
+
+
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -1482,6 +1634,14 @@ def scale():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+
+
+
+
+
+
+
 
 
 

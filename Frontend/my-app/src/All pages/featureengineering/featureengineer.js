@@ -188,7 +188,7 @@ export default function Featureengineer() {
             toast.success("proccess applied");
         } catch (error) {
             console.error('Error processing the data:', error);
-            toast.error("select only target column");
+            toast.error("select only target column");   
         } finally {
             setLoadingPlot(false);
             setIsSelectingTargetColumn(false);

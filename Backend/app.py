@@ -1211,20 +1211,14 @@ class preprocess:
             sampler = RandomUnderSampler(sampling_strategy=sampling_strategy, random_state=random_state)
         elif method == 'over':
             sampler = RandomOverSampler(sampling_strategy=sampling_strategy, random_state=random_state)
-        elif method == 'SMOTE':
-            smote = SMOTE()
-            X_res, y_res = smote.fit_resample(X, y)
-            return X_res, y_res
-        elif method == 'ADASYN':
-            adasyn = ADASYN()
-            X_res, y_res = adasyn.fit_resample(X, y)
-            return X_res, y_res
-        elif method == 'Borderline-SMOTE':
-            borderline_smote = BorderlineSMOTE()
-            X_res, y_res = borderline_smote.fit_resample(X, y)
-            return X_res, y_res
+        elif method == 'smote':
+            sampler = SMOTE()
+        elif method == 'adasyn':
+            sampler = ADASYN()
+        elif method == 'borderline-smote':
+            sampler = BorderlineSMOTE()
         else:
-            raise ValueError("method should be 'under', 'over', 'SMOTE', 'ADASYN', or 'Borderline-SMOTE'")
+            raise ValueError("method should be 'under', 'over', 'smote', 'adasyn', or 'borderline-smote'")
 
         X_res, y_res = sampler.fit_resample(X, y)
         return X_res, y_res
@@ -1242,15 +1236,7 @@ class preprocess:
         # Save plot to a bytes buffer
         buf = io.BytesIO()
         plt.savefig(buf, format='png')
-        
         buf.seek(0)
-         
-          # Save plot to a BytesIO object and encode it to base64
-        # img = io.BytesIO()
-        # plt.savefig(img, format='png')
-        # img.seek(0)
-        # plot_url = base64.b64encode(img.getvalue()).decode('utf8')
-        # plt.close()
 
         # Encode the buffer to base64
         img_base64 = base64.b64encode(buf.getvalue()).decode('utf-8')
@@ -1267,6 +1253,48 @@ class preprocess:
 #     X_res, y_res = preprocess.balance_dataset(X, y, method=method)
 #     class_distribution_image = preprocess.plot_class_distribution(y_res, f'Class Distribution after {method}')
 #     return render_template('result.html', image=class_distribution_image)
+
+# @app.route('/balance', methods=['POST'])
+# def balance():
+#     try:
+#         file = request.files['file']
+#         method = request.form['method']
+
+#         # Read CSV file into pandas DataFrame
+#         df = pd.read_csv(file)
+
+#         # Separate features (X) and target (y)
+#         X = df.iloc[:, :-1]
+#         y = df.iloc[:, -1]
+
+#         # Balance dataset based on selected method
+#         X_resampled, y_resampled = preprocess.balance_dataset(X, y, method=method)
+
+#         # Prepare balanced data for response
+#         balanced_data = {
+#             'columns': X_resampled.columns.tolist(),
+#             'data': X_resampled.values.tolist()
+#         }
+#         print("Balanced Data:", balanced_data)
+
+#         # Plot class distribution and get image URL
+#         image_url = preprocess.plot_class_distribution(y_resampled, f'Class Distribution after {method}')
+#         print("Image URL:", image_url)
+
+#         # Return JSON response with balanced data and image URL
+#         # response = jsonify({'balanced_data': balanced_data, 'image_url': image_url})
+#         response = jsonify({'balanced_data': balanced_data})
+#         print("Response JSON:", response.get_json())
+#         return response
+
+#     except KeyError as e:
+#         return jsonify({'error': f'Missing key in request: {str(e)}'}), 400
+
+#     except ValueError as e:
+#         return jsonify({'error': str(e)}), 400
+
+#     except Exception as e:
+#         return jsonify({'error': str(e)}), 500
 
 @app.route('/balance', methods=['POST'])
 def balance():
@@ -1287,19 +1315,25 @@ def balance():
         # Prepare balanced data for response
         balanced_data = {
             'columns': X_resampled.columns.tolist(),
-            'data': X_resampled.values.tolist()
+            #  'data': X_resampled.values.tolist()
+            'data': X_resampled.to_json(orient='records')  # Convert DataFrame to JSON
         }
-        print("Balanced Data:", balanced_data)
+        print("Balanced Data:", balanced_data)  # Debugging
+        print("X_resampled.values:",X_resampled.to_json(orient='records'))  # Debugging
 
         # Plot class distribution and get image URL
         image_url = preprocess.plot_class_distribution(y_resampled, f'Class Distribution after {method}')
-        print("Image URL:", image_url)
+        print("Image URL:", image_url)  # Debugging
+
+        response_data = {'balanced_data': balanced_data, 'image_url': image_url}
+        print("Response Data:", response_data)  # Debugging
 
         # Return JSON response with balanced data and image URL
-        # response = jsonify({'balanced_data': balanced_data, 'image_url': image_url})
-        response = jsonify({'balanced_data': balanced_data})
-        print("Response JSON:", response.get_json())
-        return response
+        # response = jsonify(response_data)
+        # return response
+        # return jsonify({"balanced_data": balanced_data, "image_url": image_url})
+        return jsonify(response_data)
+    
 
     except KeyError as e:
         return jsonify({'error': f'Missing key in request: {str(e)}'}), 400
@@ -1327,29 +1361,38 @@ def balance():
 #         X_resampled, y_resampled = preprocess.balance_dataset(X, y, method=method)
 
 #         # Prepare balanced data for response
-#         balanced_data = {
-#             'columns': X_resampled.columns.tolist() + ['target'],
-#             'data': [list(row) + [y_resampled[i]] for i, row in enumerate(X_resampled.values)]
-#         }
-#         print("Balanced Data:", balanced_data)
+#         columns = X_resampled.columns.tolist()
+#         data = X_resampled.values.tolist()
+#         print("Columns:", columns)  # Debugging
+#         print("Data:", data)  # Debugging
 
 #         # Plot class distribution and get image URL
 #         image_url = preprocess.plot_class_distribution(y_resampled, f'Class Distribution after {method}')
-#         print("Image URL:", image_url)
+#         print("Image URL:", image_url)  # Debugging
 
-#         # Return JSON response with balanced data and image URL
-#         response = jsonify({'balanced_data': balanced_data, 'image_url': image_url})
-#         print("Response JSON:", response.get_json())
-#         return response
+#         response_data = {
+#             'columns': columns,
+#             'data': data,
+#             'image_url': image_url
+#         }
+#         print("Response Data:", response_data)  # Debugging
+
+#         return jsonify(response_data)
 
 #     except KeyError as e:
-#         return jsonify({'error': f'Missing key in request: {str(e)}'}), 400
+#         error_message = f'Missing key in request: {str(e)}'
+#         print(error_message)
+#         return jsonify({'error': error_message}), 400
 
 #     except ValueError as e:
-#         return jsonify({'error': str(e)}), 400
+#         error_message = str(e)
+#         print(error_message)
+#         return jsonify({'error': error_message}), 400
 
 #     except Exception as e:
-#         return jsonify({'error': str(e)}), 500
+#         error_message = str(e)
+#         print(error_message)
+#         return jsonify({'error': error_message}), 500
 
 
 @app.route('/')
@@ -1406,7 +1449,7 @@ def feature_importance():
 
     # Prepare response
     feature_ranking_json = [{"rank": rank, "feature_name": feature_name, "importance": float(importance)} for rank, feature_name, importance in feature_ranking]
-
+    print(plot_url)
     return jsonify({"feature_ranking": feature_ranking_json, "plot_url": plot_url})
 
 

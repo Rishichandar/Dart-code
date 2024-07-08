@@ -1280,7 +1280,9 @@ export default function Imbalanceddataset() {
     const [persistedData, setPersistedData] = useState(null);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [processedData, setProcessedData] = useState(null);
+    console.log("proccess",processedData)
     const [classDistributionImage, setClassDistributionImage] = useState(null);
+    const [selectedTechnique, setSelectedTechnique] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -1306,48 +1308,49 @@ export default function Imbalanceddataset() {
         return () => clearTimeout(timer);
     }, []);
 
+ ;
+
     const handleItemClick = async (item) => {
         try {
             if (!persistedData || !persistedData.data || !persistedData.columns) {
                 throw new Error('No file found in persistedData');
             }
-
+    
             const headers = persistedData.columns.join(',');
             const rows = persistedData.data.map(row => row.join(',')).join('\n');
             const csvContent = `${headers}\n${rows}`;
-
+    
             const csvData = new Blob([csvContent], { type: 'text/csv' });
             const formData = new FormData();
             formData.append('file', csvData, 'data.csv');
             formData.append('method', item.toLowerCase());
-
+    
             // Send request to backend
             const response = await axios.post('http://127.0.0.1:5000/balance', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
             });
-
+    
             console.log("Full Response:", response.data);
-
-            // Set processed data
-            if (response.data && response.data.balanced_data) {
-                setProcessedData({
-                    columns: response.data.balanced_data.columns,
-                    data: response.data.balanced_data.data
-                });
-                if (response.data.image_url) {
-                    setClassDistributionImage(`data:image/png;base64,${response.data.image_url}`);
-                }
+    
+            // Check if balanced_data and image_url exist
+            const { balanced_data, image_url } = response.data;
+            console.log(balanced_data)
+    
+            if (balanced_data && image_url) {
+                setProcessedData(balanced_data);
+                setClassDistributionImage(`data:image/png;base64,${image_url}`);
+                setSelectedTechnique(item);
+                toast.success('Process applied successfully');
             } else {
-                throw new Error('Invalid data received from server');
+                console.error('Missing balanced_data or image_url in response:', response.data);
+                throw new Error('Missing balanced_data or image_url in response');
             }
-
-            toast.success('Process applied successfully');
         } catch (error) {
             console.error('Error processing the data:', error);
             toast.error('Error processing the data. Please try again.');
-
+    
             if (error.response) {
                 if (error.response.status === 400) {
                     console.log('Bad request:', error.response.data.error);
@@ -1357,12 +1360,13 @@ export default function Imbalanceddataset() {
             }
         }
     };
+   
 
     const uploadPage = () => {
         navigate('/upload');
     };
 
-    const dataToDisplay = processedData || csvData || persistedData;
+    const dataToDisplay = csvData || persistedData;
 
     return (
         <>
@@ -1375,6 +1379,9 @@ export default function Imbalanceddataset() {
                 Back
             </Button>
             <span id="preproccess">Handling Imbalanced dataset</span>
+            {selectedTechnique && (
+                <span id='mode-select3  '>{selectedTechnique}</span>
+            )}
             <div className="data-container4"></div>
             {dataToDisplay && (
                 <div className="table-container4">
@@ -1398,9 +1405,32 @@ export default function Imbalanceddataset() {
                     </table>
                 </div>
             )}
+        {processedData && (
+                <div className="table-container4">
+                    
+                    <table className="csv-table4">
+                        <thead>
+                            <tr>
+                                {processedData.columns.map((header, index) => (
+                                    <th key={index}>{header}</th>
+                                ))}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {processedData.data && JSON.parse(processedData.data).map((row, rowIndex) => (
+                                <tr key={rowIndex}>
+                                    {Object.values(row).map((cell, colIndex) => (
+                                        <td key={colIndex}>{cell}</td>
+                                    ))}
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            )}
             {classDistributionImage && (
                 <div className="image-container">
-                    <img src={classDistributionImage} alt="Class Distribution" style={{ maxWidth: '100%', position: 'relative', bottom: '40px', left: '0' }} />
+                    <img src={classDistributionImage} alt="Class Distribution" style={{ maxWidth: '52%', position: 'relative', bottom: '40px', left: '270px ' }} />
                 </div>
             )}
             <div className={`sidebar3 ${isSidebarOpen ? 'open' : ''}`}>
@@ -1422,13 +1452,13 @@ export default function Imbalanceddataset() {
                                 Over Sampling
                             </li>
                             <li style={{ marginBottom: '30px', cursor: 'pointer' }} onClick={() => handleItemClick('smote')}>
-                                Smote
+                                SMOTE
                             </li>
-                            <li style={{ marginBottom: '30px', cursor: 'pointer' }} onClick={() => handleItemClick('Borderline Smote')}>
-                                Borderline Smote
+                            <li style={{ marginBottom: '30px', cursor: 'pointer' }} onClick={() => handleItemClick('borderline-smote')}>
+                                Borderline SMOTE
                             </li>
-                            <li style={{ marginBottom: '30px', cursor: 'pointer' }} onClick={() => handleItemClick('Adasyn')}>
-                                Adasyn
+                            <li style={{ marginBottom: '30px', cursor: 'pointer' }} onClick={() => handleItemClick('adasyn')}>
+                                ADASYN
                             </li>
                         </ul>
                     </div>

@@ -1336,11 +1336,124 @@ class preprocess:
         plt.close()
         return img_base64
     
+    # @staticmethod
+    # def train_models(self, df, target_column, model_type):
+    #     X = df.drop(columns=[target_column])
+    #     y = df[target_column]
+    #     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+    #     if model_type == 'Classification':
+    #         models = {
+    #             'LogisticRegression': LogisticRegression(max_iter=1000),
+    #             'RandomForestClassifier': RandomForestClassifier(),
+    #             'GradientBoostingClassifier': GradientBoostingClassifier(),
+    #             'DecisionTreeClassifier': DecisionTreeClassifier(),
+    #             'XGBClassifier': xgb.XGBClassifier(),
+    #             'AdaBoostClassifier': AdaBoostClassifier(base_estimator=DecisionTreeClassifier())
+    #         }
+    #         best_model = None
+    #         best_score = 0  # Accuracy starts from 0
+    #         for name, model in models.items():
+    #             model.fit(X_train, y_train)
+    #             predictions = model.predict(X_test)
+    #             score = accuracy_score(y_test, predictions)
+    #             if score > best_score:
+    #                 best_score = score
+    #                 best_model = model
+
+    #     elif model_type == 'Regression':
+    #         models = {
+    #             'LinearRegression': LinearRegression(),
+    #             'RandomForestRegressor': RandomForestRegressor(),
+    #             'GradientBoostingRegressor': GradientBoostingRegressor(),
+    #             'DecisionTreeRegressor': DecisionTreeRegressor(),
+    #             'XGBRegressor': xgb.XGBRegressor(),
+    #             'AdaBoostRegressor': AdaBoostRegressor(base_estimator=DecisionTreeRegressor())
+    #         }
+    #         best_model = None
+    #         best_score = float('inf')  # MSE starts from infinity
+    #         for name, model in models.items():
+    #             model.fit(X_train, y_train)
+    #             predictions = model.predict(X_test)
+    #             score = mean_squared_error(y_test, predictions)
+    #             if score < best_score:
+    #                 best_score = score
+    #                 best_model = model
+    #     else:
+    #         return {"error": "Invalid model type specified."}
+
+    #     # Save the best model
+    #     with open('best_model.pkl', 'wb') as f:
+    #         pickle.dump(best_model, f)
+
+    #     return {"best_model": type(best_model).__name__, "best_score": best_score}
+    # @staticmethod
+    # def load_and_predict_model(self, new_data_df):
+    #     with open('best_model.pkl', 'rb') as f:
+    #         model = pickle.load(f)
+    #     predictions = model.predict(new_data_df)
+    #     return predictions
+    
+    # @staticmethod
+    # def train_models(df, target_column, model_type):
+    #     X = df.drop(columns=[target_column])
+    #     y = df[target_column]
+    #     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+    #     if model_type == 'Classification':
+    #         models = {
+    #             'LogisticRegression': LogisticRegression(max_iter=1000),
+    #             'RandomForestClassifier': RandomForestClassifier(),
+    #             'GradientBoostingClassifier': GradientBoostingClassifier(),
+    #             'DecisionTreeClassifier': DecisionTreeClassifier(),
+    #             'XGBClassifier': xgb.XGBClassifier(),
+    #             'AdaBoostClassifier': AdaBoostClassifier(estimator=DecisionTreeClassifier())
+    #         }
+    #         best_model = None
+    #         best_score = 0  # Accuracy starts from 0
+    #         for name, model in models.items():
+    #             model.fit(X_train, y_train)
+    #             predictions = model.predict(X_test)
+    #             score = accuracy_score(y_test, predictions)
+    #             if score > best_score:
+    #                 best_score = score
+    #                 best_model = model
+
+    #     elif model_type == 'Regression':
+    #         models = {
+    #             'LinearRegression': LinearRegression(),
+    #             'RandomForestRegressor': RandomForestRegressor(),
+    #             'GradientBoostingRegressor': GradientBoostingRegressor(),
+    #             'DecisionTreeRegressor': DecisionTreeRegressor(),
+    #             'XGBRegressor': xgb.XGBRegressor(),
+    #             'AdaBoostRegressor': AdaBoostRegressor(estimator=DecisionTreeRegressor())
+    #         }
+    #         best_model = None
+    #         best_score = float('inf')  # MSE starts from infinity
+    #         for name, model in models.items():
+    #             model.fit(X_train, y_train)
+    #             predictions = model.predict(X_test)
+    #             score = mean_squared_error(y_test, predictions)
+    #             if score < best_score:
+    #                 best_score = score
+    #                 best_model = model
+    #     else:
+    #         return {"error": "Invalid model type specified."}
+
+    #     # Save the best model
+    #     with open('best_model.pkl', 'wb') as f:
+    #         pickle.dump(best_model, f)
+
+    #     return {"best_model": type(best_model).__name__, "best_score": best_score}
     @staticmethod
-    def train_models(self, df, target_column, model_type):
+    def train_models(df, target_column, model_type):
         X = df.drop(columns=[target_column])
         y = df[target_column]
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+        accuracies = {}
+        best_model = None
+        best_score = None
 
         if model_type == 'Classification':
             models = {
@@ -1349,17 +1462,18 @@ class preprocess:
                 'GradientBoostingClassifier': GradientBoostingClassifier(),
                 'DecisionTreeClassifier': DecisionTreeClassifier(),
                 'XGBClassifier': xgb.XGBClassifier(),
-                'AdaBoostClassifier': AdaBoostClassifier(base_estimator=DecisionTreeClassifier())
+                'AdaBoostClassifier': AdaBoostClassifier(estimator=DecisionTreeClassifier())
             }
-            best_model = None
-            best_score = 0  # Accuracy starts from 0
+
             for name, model in models.items():
                 model.fit(X_train, y_train)
                 predictions = model.predict(X_test)
-                score = accuracy_score(y_test, predictions)
-                if score > best_score:
-                    best_score = score
-                    best_model = model
+                accuracy = accuracy_score(y_test, predictions)
+                accuracies[name] = accuracy
+
+                if best_score is None or accuracy > best_score:
+                    best_score = accuracy
+                    best_model = name
 
         elif model_type == 'Regression':
             models = {
@@ -1368,42 +1482,82 @@ class preprocess:
                 'GradientBoostingRegressor': GradientBoostingRegressor(),
                 'DecisionTreeRegressor': DecisionTreeRegressor(),
                 'XGBRegressor': xgb.XGBRegressor(),
-                'AdaBoostRegressor': AdaBoostRegressor(base_estimator=DecisionTreeRegressor())
+                'AdaBoostRegressor': AdaBoostRegressor(estimator=DecisionTreeRegressor())
             }
-            best_model = None
-            best_score = float('inf')  # MSE starts from infinity
+
             for name, model in models.items():
                 model.fit(X_train, y_train)
                 predictions = model.predict(X_test)
-                score = mean_squared_error(y_test, predictions)
-                if score < best_score:
-                    best_score = score
-                    best_model = model
+                accuracy = mean_squared_error(y_test, predictions)
+                accuracies[name] = accuracy
+
+                if best_score is None or accuracy < best_score:
+                    best_score = accuracy
+                    best_model = name
+
         else:
             return {"error": "Invalid model type specified."}
 
         # Save the best model
         with open('best_model.pkl', 'wb') as f:
-            pickle.dump(best_model, f)
+            pickle.dump(models[best_model], f)
 
-        return {"best_model": type(best_model).__name__, "best_score": best_score}
+        return {
+            "modelAccuracies": accuracies,
+            "bestModel": best_model,
+            "bestScore": best_score
+        }
+
+
     @staticmethod
-    def load_and_predict_model(self, new_data_df):
+    def load_and_predict_model(new_data_df):
         with open('best_model.pkl', 'rb') as f:
             model = pickle.load(f)
         predictions = model.predict(new_data_df)
         return predictions
 
+# @app.route('/train_and_predict', methods=['POST'])
+# def train_and_predict():
+#     try:
+#         data = request.get_json()
+#         df = pd.DataFrame(data['data'])
+#         target_column = data['target_column']
+#         model_type = data['model_type']
+    
+#         # Train the model
+#         result = preprocess.train_models(df, target_column, model_type)
+    
+#         # Load new data for prediction (optional)
+#         new_data_df = pd.DataFrame(data['new_data']) if 'new_data' in data else None
+#         if new_data_df is not None:
+#             predictions = preprocess.load_and_predict_model(new_data_df)
+#             result['predictions'] = predictions.tolist()
+    
+#         return jsonify(result)
+#     except Exception as e:
+#         return jsonify({'error': str(e)}), 500
+
 @app.route('/train_and_predict', methods=['POST'])
 def train_and_predict():
     try:
         data = request.get_json()
-        df = pd.DataFrame(data['data'])
+
+        # Ensure the data contains the columns and rows
+        columns = data['data']['columns']
+        rows = data['data']['data']
+        
+        # Ensure all rows have the same length as the columns
+        if not all(len(row) == len(columns) for row in rows):
+            raise ValueError("All rows must have the same number of elements as columns")
+        
+        # Create the DataFrame
+        df = pd.DataFrame(rows, columns=columns)
         target_column = data['target_column']
         model_type = data['model_type']
     
         # Train the model
         result = preprocess.train_models(df, target_column, model_type)
+        print("result",result)
     
         # Load new data for prediction (optional)
         new_data_df = pd.DataFrame(data['new_data']) if 'new_data' in data else None
@@ -1414,7 +1568,7 @@ def train_and_predict():
         return jsonify(result)
     except Exception as e:
         return jsonify({'error': str(e)}), 500
-
+    
 
 @app.route('/balance', methods=['POST'])
 def balance():

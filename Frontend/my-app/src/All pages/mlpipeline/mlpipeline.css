@@ -3,6 +3,7 @@
     border-collapse: collapse;
     width: 100%;
     position: relative;
+    
   }
   
   .csv-table6 th, .csv-table6    td {
@@ -36,6 +37,8 @@
     width: 70%;
     position: relative;
     left: 320px;
+    top:80px;
+    
   }
   
   
@@ -119,4 +122,31 @@
   }
   
   
-  
+  .model-accuracies-container {
+    text-align: center;
+    margin: 50px auto; /* Centering the container */
+    max-width: 800px; /* Adjust as per your design */
+    padding: 20px;
+    /* border: 1px solid #666262; */
+    border-radius: 5px;
+    position: relative;
+    left: 100px;
+    top:30px;
+}
+
+.model-accuracies-table {
+    width: 100%;
+    border-collapse: collapse; /* Collapsing borders between cells */
+}
+
+.model-accuracies-table th,
+.model-accuracies-table td {
+    padding: 8px 12px;
+    border: 1px solid #999696; /* Border styling for table cells */
+}
+
+.model-accuracies-table th {
+    background-color: #f0eaea; /* Background color for table headers */
+    font-weight: 400;
+
+}

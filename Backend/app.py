@@ -1516,16 +1516,29 @@ class preprocess:
         predictions = model.predict(new_data_df)
         return predictions
 
+
+
 # @app.route('/train_and_predict', methods=['POST'])
 # def train_and_predict():
 #     try:
 #         data = request.get_json()
-#         df = pd.DataFrame(data['data'])
+
+#         # Ensure the data contains the columns and rows
+#         columns = data['data']['columns']
+#         rows = data['data']['data']
+        
+#         # Ensure all rows have the same length as the columns
+#         if not all(len(row) == len(columns) for row in rows):
+#             raise ValueError("All rows must have the same number of elements as columns")
+        
+#         # Create the DataFrame
+#         df = pd.DataFrame(rows, columns=columns)
 #         target_column = data['target_column']
 #         model_type = data['model_type']
     
 #         # Train the model
 #         result = preprocess.train_models(df, target_column, model_type)
+#         print("result",result)
     
 #         # Load new data for prediction (optional)
 #         new_data_df = pd.DataFrame(data['new_data']) if 'new_data' in data else None
@@ -1557,19 +1570,34 @@ def train_and_predict():
     
         # Train the model
         result = preprocess.train_models(df, target_column, model_type)
-        print("result",result)
-    
-        # Load new data for prediction (optional)
-        new_data_df = pd.DataFrame(data['new_data']) if 'new_data' in data else None
-        if new_data_df is not None:
-            predictions = preprocess.load_and_predict_model(new_data_df)
-            result['predictions'] = predictions.tolist()
+        print("result", result)
     
         return jsonify(result)
     except Exception as e:
         return jsonify({'error': str(e)}), 500
     
+    
+@app.route('/predict', methods=['POST'])
+def predict():
+    try:
+        data = request.json
+        new_data = data.get('new_data')
 
+        if not new_data:
+            return jsonify({'error': 'No data received'}), 400
+
+        # Assuming new_data is received as a list of dictionaries
+        new_data_df = pd.DataFrame(new_data)
+        
+        # Perform predictions
+        predictions = preprocess.load_and_predict_model(new_data_df)
+        print(predictions)
+        return jsonify({'predictions': predictions.tolist()}), 200
+         
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+    
 @app.route('/balance', methods=['POST'])
 def balance():
     try:

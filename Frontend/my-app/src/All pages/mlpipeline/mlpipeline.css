@@ -130,12 +130,12 @@
     /* border: 1px solid #666262; */
     border-radius: 5px;
     position: relative;
-    left: 100px;
+    left: 45px;
     top:30px;
 }
 
 .model-accuracies-table {
-    width: 100%;
+    width: 65%;
     border-collapse: collapse; /* Collapsing borders between cells */
 }
 
@@ -149,4 +149,28 @@
     background-color: #f0eaea; /* Background color for table headers */
     font-weight: 400;
 
+}
+#bestmodel{
+  position: relative;
+  right: 140px;
+  top: 23px;
+}
+
+.new-data-input{
+  position: relative;
+  left: 1000px;
+  bottom: 350px;
+}
+.predictions {
+  position: absolute;
+  left: 1090px; /* Adjust based on your layout */
+  bottom: 100px; /* Adjust based on your layout */
+  font-size: 14px; /* Adjust the font size as needed */
+  margin-top: 10px; /* Add some top margin for spacing */
+  margin-bottom: 10px; /* Add some bottom margin for spacing */
+}
+
+.button-container {
+  text-align: center; /* Center aligns the button horizontally */
+  margin-top: 6px; /* Adjust as needed */
 }

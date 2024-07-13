@@ -29,7 +29,7 @@ import "./All pages/imbalanceddataset/imbalanceddataset.css";
 import Mlpipeline from './All pages/mlpipeline/mlpipeline';
 import "./All pages/mlpipeline/mlpipeline.css";
 import { CsvProvider } from './All pages/csvcontext/csvcontext';
-import background from "./blue.jpg";
+import background from "./im2.jpg";
 
 function App() {
   return (

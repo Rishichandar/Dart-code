@@ -143,10 +143,6 @@ export default function Upload() {
                         </ListItem>
                         <Divider />
                         <ListItem button>
-                            <Link to="/text-preproccess" style={{ textDecoration: 'none', color: 'black' }}><span>Text-preproccessing</span></Link>
-                        </ListItem>
-                        <Divider />
-                        <ListItem button>
                             <Link to="/Featureengineering" style={{ textDecoration: 'none', color: 'black' }}><span>Feature Engineering</span></Link>
                         </ListItem>
                         <Divider />
@@ -158,6 +154,10 @@ export default function Upload() {
                             <Link to="/Mlpipeline" style={{ textDecoration: 'none', color: 'black' }}><span>Ml-Pipeline</span></Link>
                         </ListItem>
                         <Divider />
+                        
+                        <ListItem button>
+                            <Link to="/text-preproccess" style={{ textDecoration: 'none', color: 'black' }}><span>Text-preproccessing</span></Link>
+                        </ListItem>
                     </List>
                 </div>
             </Drawer>

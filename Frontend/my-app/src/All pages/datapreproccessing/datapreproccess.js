@@ -1,5 +1,3 @@
-
-
 import Tooltip from '@mui/material/Tooltip';
 import React, { useContext, useEffect, useState } from 'react';
 import { CsvContext } from '../csvcontext/csvcontext';
@@ -14,9 +12,13 @@ import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import { toast } from "react-toastify";
 
+import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
+import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
+
 
 export default function Datapreprocessing() {
     const { csvData } = useContext(CsvContext);
+    const { processData } = useContext(CsvContext);
     const [persistedData, setPersistedData] = useState(null);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [activeItem, setActiveItem] = useState(null);
@@ -30,20 +32,40 @@ export default function Datapreprocessing() {
     console.log("segmentedData", segmentedData)
     console.log("aggregateData:", aggregateData)
 
+    // useEffect(() => {
+    //     const savedData = localStorage.getItem('csvData');
+    //     if (savedData) {
+    //         const parsedData = JSON.parse(savedData);
+    //         setPersistedData(parsedData);
+    //     }
+    // }, []);
     useEffect(() => {
         const savedData = localStorage.getItem('csvData');
         if (savedData) {
             const parsedData = JSON.parse(savedData);
             setPersistedData(parsedData);
+            console.log("csv :",parsedData);
         }
+
+        // const savedProcessedData = localStorage.getItem('processedData');
+        // if (savedProcessedData) {
+        //     setProcessedData(JSON.parse(savedProcessedData));
+        // }
     }, []);
 
+    // useEffect(() => {
+    //     if (csvData) {
+    //         localStorage.setItem('csvData', JSON.stringify(csvData));
+    //         setPersistedData(csvData);
+    //     }
+    // }, [csvData]);
     useEffect(() => {
-        if (csvData) {
-            localStorage.setItem('csvData', JSON.stringify(csvData));
-            setPersistedData(csvData);
+        if (processedData) {
+            localStorage.setItem('processData', JSON.stringify(processedData));
+            setPersistedData(processedData);
         }
-    }, [csvData]);
+    }, [processedData]);
+    
     useEffect(() => {
         // Open the sidebar after 1 second
         const timer = setTimeout(() => {
@@ -84,6 +106,7 @@ export default function Datapreprocessing() {
             });
 
             setProcessedData(response.data.transformed_data);
+            
             setSelectedTechnique(text);
             toast.success("proccess applied");
         } catch (error) {
@@ -332,10 +355,14 @@ export default function Datapreprocessing() {
     const handleTargetColumnChange = (event) => {
         setTargetColumn(event.target.value);
     };
+    const nextPage=()=>{
+        navigate('/Featureengineering');
+    }
 
     return (
         <>
-            <Button variant="outlined" style={{ float: 'right', marginRight: '50px', marginTop: '15px', }} onClick={uploadPage}>< ArrowBackIcon fontSize="smaller" style={{ position: 'relative', right: '3px' }} />Back</Button>
+             <span variant="outlined" style={{ float: 'right', marginRight: '50px', marginTop: '15px', }} onClick={nextPage}><KeyboardDoubleArrowRightIcon/></span>
+             <span variant="outlined" style={{ float: 'left', position:'relative',left:'255px',top:'15px' }} onClick={uploadPage}>< KeyboardDoubleArrowLeftIcon  /></span>
             <span id='data-preproccess'>Datapreprocessing</span>
             {selectedTechnique && (
                 <span id='mode-select'>{selectedTechnique}</span>
@@ -412,7 +439,7 @@ export default function Datapreprocessing() {
                                 Data Reshaping
                                 {activeItem === 'Data Reshaping' && renderDetails('Data Reshaping')}
                             </li>
-                            {isSelectingTargetColumn ? (
+                            {/* {isSelectingTargetColumn ? (
                                 <div>
                                     <label htmlFor="targetColumn">Select Column:</label>
                                     <select id="targetColumn" style={{marginLeft:'33px'}} name="targetColumn" value={targetColumn} onChange={handleTargetColumnChange}>
@@ -431,7 +458,7 @@ export default function Datapreprocessing() {
                                 >
                                     Data Aggregation
                                 </li>
-                            )}
+                            )} */}
                             {/* <li
                                 style={{ marginBottom: '30px', cursor: 'pointer' }}
                                 onClick={() => handleAggregationClick()}

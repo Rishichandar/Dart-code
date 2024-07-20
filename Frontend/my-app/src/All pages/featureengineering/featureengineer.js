@@ -7,7 +7,6 @@ import Tooltip from '@mui/material/Tooltip';
 import SwitchRightIcon from '@mui/icons-material/SwitchRight';
 import SwitchLeftIcon from '@mui/icons-material/SwitchLeft';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import Button from '@mui/material/Button';
 import axios from 'axios';
 import CheckIcon from '@mui/icons-material/Check';
@@ -15,9 +14,12 @@ import CloseIcon from '@mui/icons-material/Close';
 import { useNavigate } from 'react-router-dom';
 import { CsvContext } from '../csvcontext/csvcontext';
 import { toast } from "react-toastify";
+import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
+import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 
 export default function Featureengineer() {
     const { csvData } = useContext(CsvContext);
+    // const { processData } = useContext(CsvContext);
     const [persistedData, setPersistedData] = useState(null);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [activeItem, setActiveItem] = useState(null);
@@ -38,20 +40,33 @@ export default function Featureengineer() {
 
     const navigate = useNavigate();
 
+    // useEffect(() => {
+    //     const savedData = localStorage.getItem('csvData');
+    //     if (savedData) {
+    //         const parsedData = JSON.parse(savedData);
+    //         setPersistedData(parsedData);
+    //     }
+    // }, []);
     useEffect(() => {
-        const savedData = localStorage.getItem('csvData');
+        const savedData = localStorage.getItem('processData');
+        console.log("save",savedData)
         if (savedData) {
             const parsedData = JSON.parse(savedData);
+            console.log("parsed data :",parsedData)
             setPersistedData(parsedData);
         }
+        // const savedProcessedData = localStorage.getItem('processedData');
+        // if (savedProcessedData) {
+        //     setProcessedData(JSON.parse(savedProcessedData));
+        // }
     }, []);
 
     useEffect(() => {
-        if (csvData) {
-            localStorage.setItem('csvData', JSON.stringify(csvData));
-            setPersistedData(csvData);
+        if (processedData) {
+            localStorage.setItem('processData', JSON.stringify(processedData));
+            setPersistedData(processedData);
         }
-    }, [csvData]);
+    }, [processedData]);
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -248,7 +263,7 @@ export default function Featureengineer() {
     };
 
     const uploadPage = () => {
-        navigate('/upload');
+        navigate('/data-preproccess');
     };
 
     const handleTargetColumnChange = (event) => {
@@ -259,11 +274,16 @@ export default function Featureengineer() {
         setIsSelectingTargetColumn(false);
     };
 
-    const dataToDisplay = processedData || csvData || persistedData;
+    const nextPage=()=>{
+        navigate('/Imbalanceddataset');
+    }
 
+    // const dataToDisplay = processedData || csvData || persistedData;
+    const dataToDisplay =  persistedData || processedData || csvData ;
     return (
         <>
-            <Button variant="outlined" style={{ float: 'right', marginRight: '50px', marginTop: '15px' }} onClick={uploadPage}><ArrowBackIcon fontSize="smaller" style={{ position: 'relative', right: '3px' }} />Back</Button>
+             <span variant="outlined" style={{ float: 'right', marginRight: '50px', marginTop: '15px', }} onClick={nextPage}><KeyboardDoubleArrowRightIcon/></span>
+             <span variant="outlined" style={{ float: 'left', position:'relative',left:'255px',top:'15px' }} onClick={uploadPage}>< KeyboardDoubleArrowLeftIcon  /></span>
             <span id='FeatureEngineering'>FeatureEngineering</span>
             {selectedTechnique && (
                 <span id='mode-select2'>{selectedTechnique}</span>

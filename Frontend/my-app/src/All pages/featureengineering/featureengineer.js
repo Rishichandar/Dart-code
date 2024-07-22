@@ -14,8 +14,8 @@ import CloseIcon from '@mui/icons-material/Close';
 import { useNavigate } from 'react-router-dom';
 import { CsvContext } from '../csvcontext/csvcontext';
 import { toast } from "react-toastify";
-import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
-import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
+import { FaChevronCircleRight } from "react-icons/fa";
+import { FaChevronCircleLeft } from "react-icons/fa";
 
 export default function Featureengineer() {
     const { csvData } = useContext(CsvContext);
@@ -63,7 +63,7 @@ export default function Featureengineer() {
 
     useEffect(() => {
         if (processedData) {
-            localStorage.setItem('processData', JSON.stringify(processedData));
+            localStorage.setItem('featureData', JSON.stringify(processedData));
             setPersistedData(processedData);
         }
     }, [processedData]);
@@ -282,8 +282,8 @@ export default function Featureengineer() {
     const dataToDisplay =  persistedData || processedData || csvData ;
     return (
         <>
-             <span variant="outlined" style={{ float: 'right', marginRight: '50px', marginTop: '15px', }} onClick={nextPage}><KeyboardDoubleArrowRightIcon/></span>
-             <span variant="outlined" style={{ float: 'left', position:'relative',left:'255px',top:'15px' }} onClick={uploadPage}>< KeyboardDoubleArrowLeftIcon  /></span>
+             <span variant="outlined" style={{ float: 'right', position:'relative',right:'50px',top:'270px' }} onClick={nextPage}><FaChevronCircleRight size={25}/></span>
+             <span variant="outlined" style={{ float: 'left', position:'relative',left:'265px',top:'270px' }} onClick={uploadPage}>< FaChevronCircleLeft size={25} /></span>
             <span id='FeatureEngineering'>FeatureEngineering</span>
             {selectedTechnique && (
                 <span id='mode-select2'>{selectedTechnique}</span>

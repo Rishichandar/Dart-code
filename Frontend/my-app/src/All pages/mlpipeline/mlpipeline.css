@@ -49,10 +49,10 @@
   
   .toggle-button4 {
     position: absolute;
-    top: 330px;
+    top: 100px;
     right: -195px;
-    width: 35px;
-    height: 35px;
+    width: 30px;
+    height: 30px;
     background-color: #2e2b2b;
     color: rgb(255, 255, 255);
     display: flex;

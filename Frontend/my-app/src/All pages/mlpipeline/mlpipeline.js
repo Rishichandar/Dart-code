@@ -12,8 +12,8 @@ import { CsvContext } from '../csvcontext/csvcontext';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import Snackbar from '@mui/material/Snackbar'; // Import Snackbar from Material-UIs
-import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
-import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
+import { FaChevronCircleRight } from "react-icons/fa";
+import { FaChevronCircleLeft } from "react-icons/fa";
 
 export default function Mlpipeline() {
     const { csvData } = useContext(CsvContext);
@@ -295,7 +295,7 @@ export default function Mlpipeline() {
 
     return (
         <>
-            <span variant="outlined" style={{ float: 'left', position: 'relative', left: '255px', top: '15px' }} onClick={uploadPage}>< KeyboardDoubleArrowLeftIcon /></span>
+            <span variant="outlined" style={{ float: 'left', position:'relative',left:'265px',top:'270px' }} onClick={uploadPage}><  FaChevronCircleLeft size={25}  /></span>
             <span id="preproccess">Mlpipeline</span>
             {selectedTechnique && (
                 <span id='mode-select3'>{selectedTechnique}</span>

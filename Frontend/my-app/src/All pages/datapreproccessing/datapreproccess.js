@@ -12,9 +12,8 @@ import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import { toast } from "react-toastify";
 
-import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
-import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
-
+import { FaChevronCircleRight } from "react-icons/fa";
+import { FaChevronCircleLeft } from "react-icons/fa";
 
 export default function Datapreprocessing() {
     const { csvData } = useContext(CsvContext);
@@ -361,8 +360,8 @@ export default function Datapreprocessing() {
 
     return (
         <>
-             <span variant="outlined" style={{ float: 'right', marginRight: '50px', marginTop: '15px', }} onClick={nextPage}><KeyboardDoubleArrowRightIcon/></span>
-             <span variant="outlined" style={{ float: 'left', position:'relative',left:'255px',top:'15px' }} onClick={uploadPage}>< KeyboardDoubleArrowLeftIcon  /></span>
+             <span variant="outlined" style={{ float: 'right', position:'relative',right:'50px',top:'270px' }} onClick={nextPage}><FaChevronCircleRight size={25}/></span>
+             <span variant="outlined" style={{ float: 'left', position:'relative',left:'265px',top:'270px' }} onClick={uploadPage}>< FaChevronCircleLeft size={25} /></span>
             <span id='data-preproccess'>Datapreprocessing</span>
             {selectedTechnique && (
                 <span id='mode-select'>{selectedTechnique}</span>
